@@ -10,8 +10,8 @@ HEAD_PREFIX = ("switch_head", "dur_head")
 
 
 def select_score(res):
-    """Model-selection score on the pooled validation set (higher is better)."""
-    return res["ALL"]["switch_F1"] - 0.05 * res["ALL"]["dur_MAE"]
+    """Primary selection score on the pooled val set: mean of switch PR-AUC and duration macro-F1 (higher is better)."""
+    return 0.5 * (res["ALL"]["switch_PR_AUC"] + res["ALL"]["dur_macro_F1"])
 
 
 def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
@@ -32,20 +32,22 @@ def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
     history, best, best_state = [], float("-inf"), None
     for epoch in range(epochs):
         model.train()
-        total = 0.0
+        total, tot_sw, tot_du = 0.0, 0.0, 0.0
         for step, batch in enumerate(train_dl):
             batch = {k: v.to(DEVICE) for k, v in batch.items()}
             batch.pop("pair_ids")
-            loss = model(**batch)["loss"]
+            out = model(**batch)
+            loss = out["loss"]
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step(); sched.step(); opt.zero_grad()
-            total += loss.item()
+            total += loss.item(); tot_sw += out["loss_sw"].item(); tot_du += out["loss_du"].item()
             if step % log_every == 0:
                 check_mem()
                 if step == 0 and epoch == 0:
                     mem(f"{tag} step 0")
-        print(f"epoch {epoch + 1}: train loss {total / len(train_dl):.4f}")
+        n = len(train_dl)
+        print(f"epoch {epoch + 1}: train loss {total / n:.4f} (sw {tot_sw / n:.4f} | dur {tot_du / n:.4f})")
         res = evaluate_fn(model, val_dl)
         print_scores("  val", res)
         history.append(res)

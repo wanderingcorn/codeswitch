@@ -11,7 +11,7 @@ from transformers import AutoTokenizer, AutoModel
 
 from . import config as C
 from .lid import find_units
-from .metrics import score_by_pair
+from .metrics import head_outputs, score_by_pair
 from .trainer import fit
 from .utils import DEVICE, sqrt_balanced_weights
 
@@ -131,18 +131,21 @@ def build(train_raw, val_raw):
 @torch.no_grad()
 def evaluate(model, dl):
     model.eval()
-    sw_pred, sw_gold, du_pred, du_gold, pairs = [], [], [], [], []
+    sw_l, du_l, sw_g, du_g, pairs = [], [], [], [], []
     tot, nb = np.zeros(3), 0
     for batch in dl:
         batch = {k: v.to(DEVICE) for k, v in batch.items()}
         pairs += [C.PAIR_TAGS[i] for i in batch.pop("pair_ids").tolist()]
-        out = model(**batch)
+        out = model(**batch)                       # with labels: same loss formula as training
         tot += [out["loss"].item(), out["loss_sw"].item(), out["loss_du"].item()]; nb += 1
-        sw_pred += out["switch_logits"].argmax(-1).tolist(); sw_gold += batch["switch_labels"].tolist()
-        du_pred += (out["dur_logits"][:, 1:].argmax(-1) + 1).tolist();    du_gold += batch["dur_labels"].tolist()
-    res = score_by_pair(sw_pred, sw_gold, du_pred, du_gold, pairs)
-    res["ALL"].update(val_loss=round(tot[0] / nb, 4), val_loss_cs=round(tot[1] / nb, 4), val_loss_dur=round(tot[2] / nb, 4))
+        sw_l.append(out["switch_logits"].cpu()); du_l.append(out["dur_logits"].cpu())
+        sw_g.append(batch["switch_labels"].cpu()); du_g.append(batch["dur_labels"].cpu())
+    sw_g, du_g = torch.cat(sw_g), torch.cat(du_g)
+    o = head_outputs(torch.cat(sw_l), torch.cat(du_l), sw_g, du_g)
+    res = score_by_pair(o, sw_g.numpy(), du_g.numpy(), pairs)
+    res["ALL"].update(val_loss=round(tot[0] / nb, 4), val_loss_sw=round(tot[1] / nb, 4), val_loss_dur=round(tot[2] / nb, 4))
     return res
+
 
 def train(model, train_dl, val_dl):
     return fit(model, train_dl, val_dl, evaluate, C.EPOCHS, C.LR, C.HEAD_LR, log_every=500, keep_best=True, tag="XLM-R")

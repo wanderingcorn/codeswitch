@@ -13,7 +13,7 @@ from transformers import AutoTokenizer, AutoModel
 from . import config as C
 from .data import make_examples
 from .lid import find_units, langs_of, PIECE_RE
-from .metrics import score_by_pair
+from .metrics import head_outputs, score_by_pair
 from .trainer import fit
 from .utils import DEVICE, sqrt_balanced_weights
 
@@ -171,30 +171,26 @@ def build(train_recs, val_recs):
 @torch.no_grad()
 def evaluate(model, dl):
     model.eval()
-    sw_pred, sw_gold, du_pred, du_gold, du_med, pairs = [], [], [], [], [], []
+    sw_l, du_l, sw_g, du_g, pairs = [], [], [], [], []
     tot, nb = np.zeros(3), 0
     for batch in dl:
         batch = {k: v.to(DEVICE) for k, v in batch.items()}
         pid = batch.pop("pair_ids")[:, None].expand_as(batch["switch_labels"])
-        out = model(**batch)
+        out = model(**batch)                       # with labels: same loss formula as training
         tot += [out["loss"].item(), out["loss_sw"].item(), out["loss_du"].item()]; nb += 1
         m = batch["switch_labels"] != C.IGNORE
-        sw_pred += out["switch_logits"].argmax(-1)[m].tolist(); sw_gold += batch["switch_labels"][m].tolist()
-        dl_ = out["dur_logits"][m]
-        du_pred += (dl_[:, 1:].argmax(-1) + 1).tolist(); du_gold += batch["dur_labels"][m].tolist()
-        du_med  += ((dl_[:, 1:].softmax(-1).cumsum(-1) >= 0.5).int().argmax(-1) + 1).tolist()
+        sw_l.append(out["switch_logits"][m].cpu()); du_l.append(out["dur_logits"][m].cpu())
+        sw_g.append(batch["switch_labels"][m].cpu()); du_g.append(batch["dur_labels"][m].cpu())
         pairs += [C.PAIR_TAGS[i] for i in pid[m].tolist()]
-    res = score_by_pair(sw_pred, sw_gold, du_pred, du_gold, pairs)
-    g, med = np.array(du_gold), np.array(du_med)
-    mk = g > 0
-    res["ALL"]["dur_MAE_median"] = round(float(np.abs(med[mk] - g[mk]).mean()), 3)
-    res["ALL"].update(val_loss=round(tot[0] / nb, 4), val_loss_cs=round(tot[1] / nb, 4), val_loss_dur=round(tot[2] / nb, 4))
-        
+    sw_g, du_g = torch.cat(sw_g), torch.cat(du_g)
+    o = head_outputs(torch.cat(sw_l), torch.cat(du_l), sw_g, du_g)
+    res = score_by_pair(o, sw_g.numpy(), du_g.numpy(), pairs)
+    res["ALL"].update(val_loss=round(tot[0] / nb, 4), val_loss_sw=round(tot[1] / nb, 4), val_loss_dur=round(tot[2] / nb, 4))
     return res
 
 
 def train(model, train_dl, val_dl):
-    """Trains and restores the best epoch (by switch F1 and duration MAE)."""
+    """Trains and restores the best epoch (by mean of switch PR-AUC and duration macro-F1)."""
     return fit(model, train_dl, val_dl, evaluate, C.QWEN_EPOCHS, C.QWEN_LR, C.QWEN_HEAD_LR,
                log_every=100, keep_best=True, tag="Qwen")
 

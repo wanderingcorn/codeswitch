@@ -47,15 +47,16 @@ def _b1(tag, tr, va, a=2.0):
         sw_tab[key][e["switch"]] += 1
         if e["duration"] > 0:
             du_tab[key[0]][e["duration"]] += 1
-    sw_pred, du_pred = [], []
+    sw_pred, du_pred, probs = [], [], []
     for e in va:
         key = feats(e["text"], tag)
         n0, n1 = sw_tab.get(key, (0, 0))
         p = (n1 + a * prior) / (n0 + n1 + a)              # smooth toward the global prior
+        probs.append(p)
         sw_pred.append(int(p > prior))                    # threshold at the base rate (like class weights in XLM-R)
         du_pred.append(du_tab[key[0]].most_common(1)[0][0] if du_tab[key[0]] else du_mode)
     va_sw, va_du = _gold(va)
-    return score(sw_pred, va_sw, du_pred, va_du)
+    return score(sw_pred, va_sw, du_pred, va_du, sw_prob=probs)
 
 
 def _b2(tr, va, k=6):
@@ -67,7 +68,8 @@ def _b2(tr, va, k=6):
     has_dur = np.array([e["duration"] > 0 for e in tr])
     clf_du = LogisticRegression(max_iter=1000).fit(X_tr[has_dur], [e["duration"] for e in tr if e["duration"] > 0])
     va_sw, va_du = _gold(va)
-    return score(clf_sw.predict(X_va), va_sw, clf_du.predict(X_va), va_du)
+    return score(clf_sw.predict(X_va), va_sw, clf_du.predict(X_va), va_du,
+                 sw_prob=clf_sw.predict_proba(X_va)[:, 1])
 
 
 def run_baselines(train_raw, val_raw):
