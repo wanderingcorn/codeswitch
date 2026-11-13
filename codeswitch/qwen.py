@@ -163,6 +163,8 @@ def build(train_recs, val_recs):
     weights = sqrt_balanced_weights(sw)
     print("switch class weights:", weights.tolist())
     model = QwenSwitchDur(C.QWEN_NAME, C.N_DUR, weights).to(DEVICE)
+    model.decoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+    model.decoder.config.use_cache = False
     # Freeze the ~150k-token embedding: saves ~1.2 GB of Adam state and reduces overfitting
     model.decoder.embed_tokens.weight.requires_grad_(False)
     return tok, model, train_dl, val_dl, train_ds
