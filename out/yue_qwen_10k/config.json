@@ -1,0 +1,1 @@
+{"model": "qwen", "overrides": ["MAX_CONV_PER_PAIR=10000"], "minutes": 61.2}

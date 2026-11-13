@@ -1,0 +1,23 @@
+== yue_qwen_10k_ord0 | qwen | MAX_CONV_PER_PAIR=10000 LAMBDA_ORD=0 ==
+1 / 45803 training sentences exceed QWEN_MAX_LEN=256 tokens (tail labels dropped)
+switch class weights: [0.7412602305412292, 2.3566720485687256]
+[mem Qwen step 0] CUDA alloc 5.9 GB | RSS 3.2 GB
+epoch 1: train loss 1.0171 (sw 0.3491 | dur 0.6680)
+  val [ALL   ] {'switch_PR_AUC': 0.678, 'dur_macro_F1': 0.566, 'switch_P': 0.636, 'switch_R': 0.606, 'switch_F1': 0.621, 'dur_R1': 0.696, 'dur_R2': 0.78, 'dur_R3': 0.252, 'joint_acc': 0.905, 'dur_acc': 0.593, 'dur_MAE': 0.436, 'val_ce_sw': 0.1908, 'val_ce_dur': 0.886, 'val_loss': np.float64(0.802), 'val_loss_sw': np.float64(0.2845), 'val_loss_dur': np.float64(0.5175)}
+  val [yue-en] {'switch_PR_AUC': 0.678, 'dur_macro_F1': 0.566, 'switch_P': 0.636, 'switch_R': 0.606, 'switch_F1': 0.621, 'dur_R1': 0.696, 'dur_R2': 0.78, 'dur_R3': 0.252, 'joint_acc': 0.905, 'dur_acc': 0.593, 'dur_MAE': 0.436, 'val_ce_sw': 0.1908, 'val_ce_dur': 0.886}
+  ^ best so far
+[mem Qwen epoch 1] CUDA alloc 5.9 GB | RSS 5.2 GB
+epoch 2: train loss 0.7536 (sw 0.2502 | dur 0.5034)
+  val [ALL   ] {'switch_PR_AUC': 0.687, 'dur_macro_F1': 0.612, 'switch_P': 0.578, 'switch_R': 0.666, 'switch_F1': 0.619, 'dur_R1': 0.693, 'dur_R2': 0.643, 'dur_R3': 0.483, 'joint_acc': 0.898, 'dur_acc': 0.612, 'dur_MAE': 0.426, 'val_ce_sw': 0.1951, 'val_ce_dur': 0.8632, 'val_loss': np.float64(0.7935), 'val_loss_sw': np.float64(0.2807), 'val_loss_dur': np.float64(0.5128)}
+  val [yue-en] {'switch_PR_AUC': 0.687, 'dur_macro_F1': 0.612, 'switch_P': 0.578, 'switch_R': 0.666, 'switch_F1': 0.619, 'dur_R1': 0.693, 'dur_R2': 0.643, 'dur_R3': 0.483, 'joint_acc': 0.898, 'dur_acc': 0.612, 'dur_MAE': 0.426, 'val_ce_sw': 0.1951, 'val_ce_dur': 0.8632}
+  ^ best so far
+[mem Qwen epoch 2] CUDA alloc 5.9 GB | RSS 7.3 GB
+epoch 3: train loss 0.6779 (sw 0.1956 | dur 0.4823)
+  val [ALL   ] {'switch_PR_AUC': 0.657, 'dur_macro_F1': 0.607, 'switch_P': 0.57, 'switch_R': 0.638, 'switch_F1': 0.602, 'dur_R1': 0.727, 'dur_R2': 0.564, 'dur_R3': 0.524, 'joint_acc': 0.897, 'dur_acc': 0.608, 'dur_MAE': 0.442, 'val_ce_sw': 0.2092, 'val_ce_dur': 0.8711, 'val_loss': np.float64(0.8445), 'val_loss_sw': np.float64(0.324), 'val_loss_dur': np.float64(0.5205)}
+  val [yue-en] {'switch_PR_AUC': 0.657, 'dur_macro_F1': 0.607, 'switch_P': 0.57, 'switch_R': 0.638, 'switch_F1': 0.602, 'dur_R1': 0.727, 'dur_R2': 0.564, 'dur_R3': 0.524, 'joint_acc': 0.897, 'dur_acc': 0.608, 'dur_MAE': 0.442, 'val_ce_sw': 0.2092, 'val_ce_dur': 0.8711}
+[mem Qwen epoch 3] CUDA alloc 5.9 GB | RSS 7.3 GB
+epoch 4: train loss 0.5969 (sw 0.1377 | dur 0.4591)
+  val [ALL   ] {'switch_PR_AUC': 0.598, 'dur_macro_F1': 0.588, 'switch_P': 0.557, 'switch_R': 0.59, 'switch_F1': 0.573, 'dur_R1': 0.686, 'dur_R2': 0.506, 'dur_R3': 0.57, 'joint_acc': 0.895, 'dur_acc': 0.586, 'dur_MAE': 0.475, 'val_ce_sw': 0.2554, 'val_ce_dur': 0.8873, 'val_loss': np.float64(0.9805), 'val_loss_sw': np.float64(0.4411), 'val_loss_dur': np.float64(0.5394)}
+  val [yue-en] {'switch_PR_AUC': 0.598, 'dur_macro_F1': 0.588, 'switch_P': 0.557, 'switch_R': 0.59, 'switch_F1': 0.573, 'dur_R1': 0.686, 'dur_R2': 0.506, 'dur_R3': 0.57, 'joint_acc': 0.895, 'dur_acc': 0.586, 'dur_MAE': 0.475, 'val_ce_sw': 0.2554, 'val_ce_dur': 0.8873}
+[mem Qwen epoch 4] CUDA alloc 5.9 GB | RSS 7.3 GB
+done: out/yue_qwen_10k_ord0 (62.0 min)

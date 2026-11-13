@@ -9,9 +9,9 @@ BAD_PATH = "parse_failed_conversations.txt"
 
 # (first_language, second_language) -> pair tag. Names must match the CSV values exactly.
 PAIRS = {
-    ("Hindi", "English"):      "hi-en",
+    # ("Hindi", "English"):      "hi-en",
     ("Cantonese", "English"):  "yue-en",
-    ("Spanish", "English"):    "es-en",
+    # ("Spanish", "English"):    "es-en",
     # ("Arabic", "English"):     "ar-en",
     # ("German", "English"):     "de-en",
     # ("Vietnamese", "English"): "vi-en",
@@ -25,7 +25,7 @@ PAIRS = {
 
 PAIR_TAGS = list(PAIRS.values())
 PAIR2ID = {t: i for i, t in enumerate(PAIR_TAGS)}
-MAX_CONV_PER_PAIR = 1000   # max conversations per pair; None = use all
+MAX_CONV_PER_PAIR = 10000   # max conversations per pair; None = use all
 L1_MIN_SHARE = 0.1        # corpus_report warns when the L1 unit share falls below this
 MIN_UNITS = 2             # a sentence needs at least this many units to have a prediction point
 VAL_FRAC = 0.1            # fraction of conversations (per pair) held out for validation
@@ -52,7 +52,7 @@ VAL_BATCH_SIZE = 64
 # ---- Qwen3 ----
 QWEN_NAME = "Qwen/Qwen3-0.6B-Base"
 QWEN_MAX_LEN = 256        # Devanagari takes many Qwen tokens, so this is looser than MAX_LEN
-QWEN_BATCH_SIZE =  32      # On P100-12GB, use 8. On Macbook, use 16. On V100, use?
+QWEN_BATCH_SIZE =  64      # On P100-12GB, use 8. On Macbook, use 16. On V100, use?
 QWEN_EPOCHS = 4
 QWEN_LR = 5e-6
 QWEN_HEAD_LR = 1e-4
