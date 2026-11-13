@@ -4,7 +4,7 @@
   "BUCKET_MULT": 50,
   "DATA_PATH": "SwitchLingua_text.csv",
   "DUR_SMOOTH": 0.1,
-  "EPOCHS": 5,
+  "EPOCHS": 3,
   "HEAD_LR": 0.0001,
   "IGNORE": -100,
   "KEEP_NEG": 1.0,
@@ -13,12 +13,15 @@
   "LAMBDA_ORD": 0.5,
   "LR": 1e-05,
   "MAX_CONV_PER_PAIR": 3000,
-  "MAX_LEN": 128,
+  "MAX_LEN": 6,
   "MIN_UNITS": 2,
   "N_DUR": 4,
   "PAIR2ID": {
     "yue-en": 0
   },
+  "PAIR_SEL": [
+    "yue-en"
+  ],
   "PAIR_TAGS": [
     "yue-en"
   ],
@@ -35,7 +38,9 @@
   "XLMR_NAME": "xlm-roberta-base",
   "model": "xlmr",
   "overrides": [
+    "MAX_LEN=6",
+    "EPOCHS=3",
     "MAX_CONV_PER_PAIR=3000"
   ],
-  "minutes": 15.8
+  "minutes": 9.3
 }

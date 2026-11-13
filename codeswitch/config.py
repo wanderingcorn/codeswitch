@@ -12,23 +12,30 @@ DATA_PATH = "SwitchLingua_text.csv"
 BAD_PATH = "parse_failed_conversations.txt"
 
 # (first_language, second_language) -> pair tag. Names must match the CSV values exactly.
-PAIRS = {
-    # ("Hindi", "English"):      "hi-en",
+ALL_PAIRS = {
+    ("Hindi", "English"):      "hi-en",
     ("Cantonese", "English"):  "yue-en",
-    # ("Spanish", "English"):    "es-en",
-    # ("Arabic", "English"):     "ar-en",
-    # ("German", "English"):     "de-en",
-    # ("Vietnamese", "English"): "vi-en",
-    # ("Japanese", "English"):   "ja-en",
-    # ("Korean", "English"):     "ko-en",
-    # ("French", "English"):     "fr-en",
-    # ("Russian", "English"):    "ru-en",
-    # ("Italian", "English"):    "it-en",
-    # ("Chinese", "English"):    "zh-en",
+    ("Spanish", "English"):    "es-en",
+    ("Arabic", "English"):     "ar-en",
+    ("German", "English"):     "de-en",
+    ("Vietnamese", "English"): "vi-en",
+    ("Japanese", "English"):   "ja-en",
+    ("Korean", "English"):     "ko-en",
+    ("French", "English"):     "fr-en",
+    ("Russian", "English"):    "ru-en",
+    ("Italian", "English"):    "it-en",
+    ("Chinese", "English"):    "zh-en",
 }
+PAIR_SEL = ["yue-en"]          # <- override this from the grid
 
-PAIR_TAGS = list(PAIRS.values())
-PAIR2ID = {t: i for i, t in enumerate(PAIR_TAGS)}
+def apply_pair_sel():
+    global PAIRS, PAIR_TAGS, PAIR2ID
+    sel = list(ALL_PAIRS.values()) if PAIR_SEL == "all" else PAIR_SEL
+    PAIRS = {k: v for k, v in ALL_PAIRS.items() if v in sel}
+    PAIR_TAGS = list(PAIRS.values())
+    PAIR2ID = {t: i for i, t in enumerate(PAIR_TAGS)}
+
+apply_pair_sel()
 MAX_CONV_PER_PAIR = 10000   # max conversations per pair; None = use all
 L1_MIN_SHARE = 0.1        # corpus_report warns when the L1 unit share falls below this
 MIN_UNITS = 2             # a sentence needs at least this many units to have a prediction point

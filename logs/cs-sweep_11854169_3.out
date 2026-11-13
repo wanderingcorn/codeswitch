@@ -1,5 +1,0 @@
-== yue_qwen_3k_bat128 | qwen | MAX_CONV_PER_PAIR=3000 QWEN_BATCH_SIZE = 128 ==
-Traceback (most recent call last):
-  File "/home/lu.suo/codeswitch/run.py", line 14, in <module>
-    k, v = kv.split("=", 1)
-ValueError: not enough values to unpack (expected 2, got 1)

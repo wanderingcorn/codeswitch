@@ -1,5 +1,6 @@
 # name  model  overrides (KEY=VALUE, space separated)
 # model: xlmr | qwen | baselines
-yue_xlmr_3k           xlmr  MAX_CONV_PER_PAIR=3000
-yue_qwen_3k           qwen  MAX_CONV_PER_PAIR=3000
-yue_qwen_3k_bat128    qwen  MAX_CONV_PER_PAIR=3000 QWEN_BATCH_SIZE=128
+yue_xlmr_win3          xlmr  MAX_LEN=3  EPOCHS=3 MAX_CONV_PER_PAIR=3000 
+yue_xlmr_win6          xlmr  MAX_LEN=6  EPOCHS=3 MAX_CONV_PER_PAIR=3000 
+yue_xlmr_win12         xlmr  MAX_LEN=12  EPOCHS=3 MAX_CONV_PER_PAIR=3000 
+yue_xlmr_win24         xlmr  MAX_LEN=24  EPOCHS=3 MAX_CONV_PER_PAIR=3000 

@@ -42,7 +42,8 @@ else:
     hist = qwen.train(model, tdl, vdl)       # restores best epoch
     res = qwen.evaluate(model, vdl)
 
-cfg = {k: getattr(C, k) for k in dir(C) if k.isupper() and not k.startswith("_") and k != "PAIRS"}
+cfg = {k: getattr(C, k) for k in dir(C)
+       if k.isupper() and not k.startswith("_") and k not in ("PAIRS", "ALL_PAIRS")}
 cfg.update(model=args.model, overrides=args.set, minutes=round((time.time() - t0) / 60, 1))
 json.dump(res,  open(f"{out}/results.json", "w"), indent=2, default=float)
 json.dump(hist, open(f"{out}/history.json", "w"), indent=2, default=float)

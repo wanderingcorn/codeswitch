@@ -4,7 +4,7 @@
   "BUCKET_MULT": 50,
   "DATA_PATH": "SwitchLingua_text.csv",
   "DUR_SMOOTH": 0.1,
-  "EPOCHS": 5,
+  "EPOCHS": 3,
   "HEAD_LR": 0.0001,
   "IGNORE": -100,
   "KEEP_NEG": 1.0,
@@ -13,16 +13,19 @@
   "LAMBDA_ORD": 0.5,
   "LR": 1e-05,
   "MAX_CONV_PER_PAIR": 3000,
-  "MAX_LEN": 128,
+  "MAX_LEN": 3,
   "MIN_UNITS": 2,
   "N_DUR": 4,
   "PAIR2ID": {
     "yue-en": 0
   },
+  "PAIR_SEL": [
+    "yue-en"
+  ],
   "PAIR_TAGS": [
     "yue-en"
   ],
-  "QWEN_BATCH_SIZE": 128,
+  "QWEN_BATCH_SIZE": 64,
   "QWEN_EPOCHS": 4,
   "QWEN_HEAD_LR": 0.0001,
   "QWEN_LR": 5e-06,
@@ -33,10 +36,11 @@
   "VAL_BATCH_SIZE": 64,
   "VAL_FRAC": 0.1,
   "XLMR_NAME": "xlm-roberta-base",
-  "model": "qwen",
+  "model": "xlmr",
   "overrides": [
-    "MAX_CONV_PER_PAIR=3000",
-    "QWEN_BATCH_SIZE=128"
+    "MAX_LEN=3",
+    "EPOCHS=3",
+    "MAX_CONV_PER_PAIR=3000"
   ],
-  "minutes": 8.3
+  "minutes": 9.7
 }

@@ -1,0 +1,107 @@
+[
+  {
+    "ALL": {
+      "switch_PR_AUC": 0.629,
+      "dur_macro_F1": 0.59,
+      "switch_P": 0.493,
+      "switch_R": 0.674,
+      "switch_F1": 0.57,
+      "dur_R1": 0.703,
+      "dur_R2": 0.63,
+      "dur_R3": 0.425,
+      "joint_acc": 0.881,
+      "dur_acc": 0.589,
+      "dur_MAE": 0.44,
+      "val_ce_sw": 0.2289,
+      "val_ce_dur": 0.8417,
+      "val_loss": 0.5442,
+      "val_loss_sw": 0.293,
+      "val_loss_dur": 0.2512
+    },
+    "yue-en": {
+      "switch_PR_AUC": 0.629,
+      "dur_macro_F1": 0.59,
+      "switch_P": 0.493,
+      "switch_R": 0.674,
+      "switch_F1": 0.57,
+      "dur_R1": 0.703,
+      "dur_R2": 0.63,
+      "dur_R3": 0.425,
+      "joint_acc": 0.881,
+      "dur_acc": 0.589,
+      "dur_MAE": 0.44,
+      "val_ce_sw": 0.2289,
+      "val_ce_dur": 0.8417
+    }
+  },
+  {
+    "ALL": {
+      "switch_PR_AUC": 0.646,
+      "dur_macro_F1": 0.614,
+      "switch_P": 0.488,
+      "switch_R": 0.687,
+      "switch_F1": 0.57,
+      "dur_R1": 0.665,
+      "dur_R2": 0.578,
+      "dur_R3": 0.576,
+      "joint_acc": 0.881,
+      "dur_acc": 0.606,
+      "dur_MAE": 0.431,
+      "val_ce_sw": 0.2215,
+      "val_ce_dur": 0.8294,
+      "val_loss": 0.535,
+      "val_loss_sw": 0.287,
+      "val_loss_dur": 0.248
+    },
+    "yue-en": {
+      "switch_PR_AUC": 0.646,
+      "dur_macro_F1": 0.614,
+      "switch_P": 0.488,
+      "switch_R": 0.687,
+      "switch_F1": 0.57,
+      "dur_R1": 0.665,
+      "dur_R2": 0.578,
+      "dur_R3": 0.576,
+      "joint_acc": 0.881,
+      "dur_acc": 0.606,
+      "dur_MAE": 0.431,
+      "val_ce_sw": 0.2215,
+      "val_ce_dur": 0.8294
+    }
+  },
+  {
+    "ALL": {
+      "switch_PR_AUC": 0.646,
+      "dur_macro_F1": 0.612,
+      "switch_P": 0.494,
+      "switch_R": 0.689,
+      "switch_F1": 0.575,
+      "dur_R1": 0.71,
+      "dur_R2": 0.521,
+      "dur_R3": 0.593,
+      "joint_acc": 0.882,
+      "dur_acc": 0.606,
+      "dur_MAE": 0.435,
+      "val_ce_sw": 0.2219,
+      "val_ce_dur": 0.8215,
+      "val_loss": 0.5377,
+      "val_loss_sw": 0.2896,
+      "val_loss_dur": 0.248
+    },
+    "yue-en": {
+      "switch_PR_AUC": 0.646,
+      "dur_macro_F1": 0.612,
+      "switch_P": 0.494,
+      "switch_R": 0.689,
+      "switch_F1": 0.575,
+      "dur_R1": 0.71,
+      "dur_R2": 0.521,
+      "dur_R3": 0.593,
+      "joint_acc": 0.882,
+      "dur_acc": 0.606,
+      "dur_MAE": 0.435,
+      "val_ce_sw": 0.2219,
+      "val_ce_dur": 0.8215
+    }
+  }
+]

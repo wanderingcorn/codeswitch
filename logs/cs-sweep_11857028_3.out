@@ -1,0 +1,20 @@
+== yue_xlmr_win12 | xlmr | MAX_LEN=12  EPOCHS=3 MAX_CONV_PER_PAIR=3000 ==
+downsampling: 281259 -> 281259, switch=1 share 9.2%
+switch class weights: [0.7419158816337585, 2.3359079360961914]
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+[mem XLM-R step 0] CUDA alloc 3.4 GB | RSS 3.5 GB
+epoch 1: train loss 0.7580 (sw 0.3738 | dur 0.3843)
+  val [ALL   ] {'switch_PR_AUC': 0.629, 'dur_macro_F1': 0.59, 'switch_P': 0.493, 'switch_R': 0.674, 'switch_F1': 0.57, 'dur_R1': 0.703, 'dur_R2': 0.63, 'dur_R3': 0.425, 'joint_acc': 0.881, 'dur_acc': 0.589, 'dur_MAE': 0.44, 'val_ce_sw': 0.2289, 'val_ce_dur': 0.8417, 'val_loss': np.float64(0.5442), 'val_loss_sw': np.float64(0.293), 'val_loss_dur': np.float64(0.2512)}
+  val [yue-en] {'switch_PR_AUC': 0.629, 'dur_macro_F1': 0.59, 'switch_P': 0.493, 'switch_R': 0.674, 'switch_F1': 0.57, 'dur_R1': 0.703, 'dur_R2': 0.63, 'dur_R3': 0.425, 'joint_acc': 0.881, 'dur_acc': 0.589, 'dur_MAE': 0.44, 'val_ce_sw': 0.2289, 'val_ce_dur': 0.8417}
+  ^ best so far
+[mem XLM-R epoch 1] CUDA alloc 3.4 GB | RSS 4.3 GB
+epoch 2: train loss 0.5547 (sw 0.2971 | dur 0.2576)
+  val [ALL   ] {'switch_PR_AUC': 0.646, 'dur_macro_F1': 0.614, 'switch_P': 0.488, 'switch_R': 0.687, 'switch_F1': 0.57, 'dur_R1': 0.665, 'dur_R2': 0.578, 'dur_R3': 0.576, 'joint_acc': 0.881, 'dur_acc': 0.606, 'dur_MAE': 0.431, 'val_ce_sw': 0.2215, 'val_ce_dur': 0.8294, 'val_loss': np.float64(0.535), 'val_loss_sw': np.float64(0.287), 'val_loss_dur': np.float64(0.248)}
+  val [yue-en] {'switch_PR_AUC': 0.646, 'dur_macro_F1': 0.614, 'switch_P': 0.488, 'switch_R': 0.687, 'switch_F1': 0.57, 'dur_R1': 0.665, 'dur_R2': 0.578, 'dur_R3': 0.576, 'joint_acc': 0.881, 'dur_acc': 0.606, 'dur_MAE': 0.431, 'val_ce_sw': 0.2215, 'val_ce_dur': 0.8294}
+  ^ best so far
+[mem XLM-R epoch 2] CUDA alloc 3.4 GB | RSS 4.3 GB
+epoch 3: train loss 0.5185 (sw 0.2748 | dur 0.2438)
+  val [ALL   ] {'switch_PR_AUC': 0.646, 'dur_macro_F1': 0.612, 'switch_P': 0.494, 'switch_R': 0.689, 'switch_F1': 0.575, 'dur_R1': 0.71, 'dur_R2': 0.521, 'dur_R3': 0.593, 'joint_acc': 0.882, 'dur_acc': 0.606, 'dur_MAE': 0.435, 'val_ce_sw': 0.2219, 'val_ce_dur': 0.8215, 'val_loss': np.float64(0.5377), 'val_loss_sw': np.float64(0.2896), 'val_loss_dur': np.float64(0.248)}
+  val [yue-en] {'switch_PR_AUC': 0.646, 'dur_macro_F1': 0.612, 'switch_P': 0.494, 'switch_R': 0.689, 'switch_F1': 0.575, 'dur_R1': 0.71, 'dur_R2': 0.521, 'dur_R3': 0.593, 'joint_acc': 0.882, 'dur_acc': 0.606, 'dur_MAE': 0.435, 'val_ce_sw': 0.2219, 'val_ce_dur': 0.8215}
+[mem XLM-R epoch 3] CUDA alloc 3.4 GB | RSS 4.3 GB
+done: out/yue_xlmr_win12 (9.5 min)
