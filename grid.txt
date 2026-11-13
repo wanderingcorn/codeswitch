@@ -1,22 +1,5 @@
 # name  model  overrides (KEY=VALUE, space separated)
 # model: xlmr | qwen | baselines
-yue_xlmr_10k          xlmr  MAX_CONV_PER_PAIR=10000
-yue_qwen_10k          qwen  MAX_CONV_PER_PAIR=10000
 yue_xlmr_3k           xlmr  MAX_CONV_PER_PAIR=3000
 yue_qwen_3k           qwen  MAX_CONV_PER_PAIR=3000
-yue_xlmr_10k_lr3e-5   xlmr  MAX_CONV_PER_PAIR=10000 LR=3e-5
-yue_qwen_10k_lr2e-6   qwen  MAX_CONV_PER_PAIR=10000 QWEN_LR=2e-6 QWEN_EPOCHS=3
-yue_qwen_10k_ord0     qwen  MAX_CONV_PER_PAIR=10000 LAMBDA_ORD=0
-yue_xlmr_10k_seed1    xlmr  MAX_CONV_PER_PAIR=10000 SEED=1
-
-# [lu.suo@explorer-02 codeswitch]$ sacct -j 11847443 -X -o JobID,Elapsed
-# JobID           Elapsed 
-# ------------ ---------- 
-# 11847443_1     01:28:12 
-# 11847443_2     01:01:12 
-# 11847443_3     00:27:15 
-# 11847443_4     00:20:54 
-# 11847443_5     01:32:41 
-# 11847443_6     00:46:40 
-# 11847443_7     01:02:13 
-# 11847443_8     01:28:58 
+yue_qwen_3k_bat128    qwen  MAX_CONV_PER_PAIR=3000 QWEN_BATCH_SIZE=128

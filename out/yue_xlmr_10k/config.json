@@ -1,1 +1,0 @@
-{"model": "xlmr", "overrides": ["MAX_CONV_PER_PAIR=10000"], "minutes": 88.2}

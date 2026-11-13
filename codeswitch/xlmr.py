@@ -13,7 +13,7 @@ from . import config as C
 from .lid import find_units
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, sqrt_balanced_weights
+from .utils import DEVICE, autocast, sqrt_balanced_weights
 
 
 def load_tokenizer():
@@ -92,7 +92,9 @@ class SwitchDurModel(nn.Module):
         self.register_buffer("switch_weights", switch_weights)
 
     def forward(self, input_ids, attention_mask, switch_labels=None, dur_labels=None):
-        H = self.encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
+        with autocast():
+            H = self.encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
+        H = H.float()                             # heads and losses stay in fp32
         pos = (input_ids == self.mask_token_id).int().argmax(1)                 # position of <mask>
         h = self.drop(H[torch.arange(H.size(0), device=H.device), pos])
         switch_logits, dur_logits = self.switch_head(h), self.dur_head(h)

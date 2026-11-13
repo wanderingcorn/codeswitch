@@ -27,6 +27,15 @@ DEVICE = get_device()
 MEM_LIMIT_GB = (torch.mps.recommended_max_memory() / 1e9 * 0.9) if DEVICE.type == "mps" else 22
 
 
+def amp_enabled():
+    return bool(getattr(C, "USE_AMP", False)) and DEVICE.type == "cuda"
+
+
+def autocast():
+    """fp16 autocast on CUDA (V100: no bf16); no-op elsewhere. Wrap only the backbone forward."""
+    return torch.autocast("cuda", dtype=torch.float16, enabled=amp_enabled())
+
+
 def set_seed(seed=C.SEED):
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
 

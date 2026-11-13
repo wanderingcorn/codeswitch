@@ -15,7 +15,7 @@ from .data import make_examples
 from .lid import find_units, langs_of, PIECE_RE
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, sqrt_balanced_weights
+from .utils import DEVICE, autocast, sqrt_balanced_weights
 
 
 def load_tokenizer():
@@ -126,7 +126,9 @@ class QwenSwitchDur(nn.Module):
         self.register_buffer("dur_idx", torch.arange(n_dur, dtype=torch.float))
 
     def forward(self, input_ids, attention_mask, switch_labels=None, dur_labels=None):
-        h = self.drop(self.decoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state)
+        with autocast():
+            h = self.decoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
+        h = self.drop(h.float())                  # heads and losses stay in fp32
         switch_logits, dur_logits = self.switch_head(h), self.dur_head(h)
         out = {"switch_logits": switch_logits, "dur_logits": dur_logits}
         if switch_labels is not None:

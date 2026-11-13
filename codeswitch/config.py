@@ -1,6 +1,10 @@
 """Central configuration. Edit here; the notebook uses %autoreload so changes apply on re-run."""
 
 IGNORE = -100          # label value ignored by the losses
+
+# ---- Precision ----
+# V100 has no bf16 / TF32: use fp16 autocast + GradScaler (fp32 master weights). Auto-disabled off CUDA.
+USE_AMP = True
 SEED = 42
 
 # ---- Data ----
@@ -52,7 +56,7 @@ VAL_BATCH_SIZE = 64
 # ---- Qwen3 ----
 QWEN_NAME = "Qwen/Qwen3-0.6B-Base"
 QWEN_MAX_LEN = 256        # Devanagari takes many Qwen tokens, so this is looser than MAX_LEN
-QWEN_BATCH_SIZE =  64      # On P100-12GB, use 8. On Macbook, use 16. On V100, use?
+QWEN_BATCH_SIZE =  64      # On P100-12GB, use 8. On Macbook, use 16. On V100-32GB (fp16 AMP), 64 is safe; try 128.
 QWEN_EPOCHS = 4
 QWEN_LR = 5e-6
 QWEN_HEAD_LR = 1e-4

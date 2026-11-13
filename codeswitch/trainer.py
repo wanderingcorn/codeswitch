@@ -4,7 +4,7 @@ from transformers import get_linear_schedule_with_warmup
 
 from . import config as C
 from .metrics import print_scores
-from .utils import DEVICE, check_mem, free, mem
+from .utils import DEVICE, amp_enabled, check_mem, free, mem
 
 HEAD_PREFIX = ("switch_head", "dur_head")
 
@@ -29,6 +29,7 @@ def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
     total_steps = epochs * len(train_dl)
     sched = get_linear_schedule_with_warmup(opt, int(0.1 * total_steps), total_steps)
 
+    scaler = torch.amp.GradScaler("cuda", enabled=amp_enabled())   # no-op when AMP is off
     history, best, best_state = [], float("-inf"), None
     for epoch in range(epochs):
         model.train()
@@ -38,9 +39,10 @@ def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
             batch.pop("pair_ids")
             out = model(**batch)
             loss = out["loss"]
-            loss.backward()
+            scaler.scale(loss).backward()
+            scaler.unscale_(opt)                  # clip on true (unscaled) gradients
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            opt.step(); sched.step(); opt.zero_grad()
+            scaler.step(opt); scaler.update(); sched.step(); opt.zero_grad()
             total += loss.item(); tot_sw += out["loss_sw"].item(); tot_du += out["loss_du"].item()
             if step % log_every == 0:
                 check_mem()
@@ -59,6 +61,6 @@ def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
 
     if keep_best and best_state is not None:
         model.load_state_dict(best_state)
-    del opt, sched, best_state
+    del opt, sched, scaler, best_state
     free()
     return history
