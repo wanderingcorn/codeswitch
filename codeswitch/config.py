@@ -49,6 +49,11 @@ def dur_class(run):
 
 LAMBDA_DUR = 1          # weight of the duration loss
 
+# ---- Validation schedule ----
+# Fractions of an epoch at which to validate. 1.0 = epoch end. Dense-then-sparse in epoch 1 to catch the fast initial rise.
+EVAL_FRACS_FIRST = (1/16, 1/8, 1/4, 1/2, 1.0)
+EVAL_FRACS_LATER = (2.0,)
+
 # ---- XLM-R ----
 XLMR_NAME = "xlm-roberta-base"
 MAX_LEN = 128             # safety truncation (left side is dropped)
@@ -69,3 +74,13 @@ QWEN_LR = 5e-6
 QWEN_HEAD_LR = 1e-4
 DUR_SMOOTH = 0.1          # label smoothing for the duration loss
 LAMBDA_ORD = 0.5          # ordinal L1 penalty on the expected duration class
+
+# ---- LoRA (Qwen only) ----
+# USE_LORA=False: full fine-tuning, fp32 weights (original behaviour, e.g. 0.6B).
+# USE_LORA=True:  base frozen + fp16 weights, LoRA adapters (fp32) trained. Use QWEN_LR ~1e-4 with LoRA.
+USE_LORA = False
+GRAD_CKPT = True   # False: less time, more memory
+LORA_R = 16
+LORA_ALPHA = 32
+LORA_DROPOUT = 0.05
+LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]

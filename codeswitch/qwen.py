@@ -117,8 +117,20 @@ def show_alignment(recs, tokenizer):
 class QwenSwitchDur(nn.Module):
     def __init__(self, name, n_dur, switch_weights):
         super().__init__()
-        self.decoder = AutoModel.from_pretrained(name).float()
-        hidden = self.decoder.config.hidden_size
+        # LoRA: frozen base can be fp16 (half the memory); full fine-tuning keeps fp32 master weights
+        dec = AutoModel.from_pretrained(name, torch_dtype=torch.float16 if C.USE_LORA else torch.float32)
+        dec.config.use_cache = False
+        if C.GRAD_CKPT:
+            dec.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+        hidden = dec.config.hidden_size
+        if C.USE_LORA:
+            from peft import LoraConfig, get_peft_model       # lazy: peft is only needed with LoRA
+            dec = get_peft_model(dec, LoraConfig(r=C.LORA_R, lora_alpha=C.LORA_ALPHA,
+                                                 lora_dropout=C.LORA_DROPOUT, target_modules=C.LORA_TARGETS))
+        else:
+            # Freeze the ~150k-token embedding: saves Adam state and reduces overfitting
+            dec.embed_tokens.weight.requires_grad_(False)
+        self.decoder = dec
         self.drop = nn.Dropout(0.2)
         self.switch_head = nn.Linear(hidden, 2)
         self.dur_head = nn.Linear(hidden, n_dur)
@@ -165,10 +177,9 @@ def build(train_recs, val_recs):
     weights = sqrt_balanced_weights(sw)
     print("switch class weights:", weights.tolist())
     model = QwenSwitchDur(C.QWEN_NAME, C.N_DUR, weights).to(DEVICE)
-    model.decoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
-    model.decoder.config.use_cache = False
-    # Freeze the ~150k-token embedding: saves ~1.2 GB of Adam state and reduces overfitting
-    model.decoder.embed_tokens.weight.requires_grad_(False)
+    n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    n_all = sum(p.numel() for p in model.parameters())
+    print(f"{C.QWEN_NAME} | LoRA={C.USE_LORA} | trainable {n_tr / 1e6:.1f}M / {n_all / 1e6:.1f}M params")
     return tok, model, train_dl, val_dl, train_ds
 
 
