@@ -1,6 +1,14 @@
 # name  model  overrides (KEY=VALUE, space separated)
 # model: xlmr | qwen | baselines
-baselines       baselines   PAIR_SEL="all" MAX_CONV_PER_PAIR=300
-all_xlmr_300    xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   
-all_qwen_300    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   QWEN_EPOCHS=1   
-all_qw4b_300    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   QWEN_EPOCHS=1 QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4
+baselines_8k    baselines   PAIR_SEL="all" MAX_CONV_PER_PAIR=8000
+all_xlmr_8k     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2
+all_qwen_8k     qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2   
+all_qw4b_8k     qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4
+all_qwen_8k_dur03   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.3
+all_qwen_8k_dur3    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=3
+all_qwen_8k_emd0    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_EMD=0
+all_qwen_8k_emd1    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_EMD=1
+all_xlmr_8k_win8     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2    MAX_LEN=8
+all_xlmr_8k_win16     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2    MAX_LEN=16
+all_xlmr_8k_win32     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2    MAX_LEN=32
+all_xlmr_8k_win64     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2    MAX_LEN=64
