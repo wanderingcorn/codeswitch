@@ -1,11 +1,23 @@
 """Central configuration. Edit here; the notebook uses %autoreload so changes apply on re-run."""
 
+import os
+
 IGNORE = -100          # label value ignored by the losses
+
+# ---- CPU ----
+try:
+    _NCPU = len(os.sched_getaffinity(0))      # respects SLURM / cgroup limits
+except AttributeError:
+    _NCPU = os.cpu_count() or 1
+NUM_WORKERS = int(os.environ.get("SLURM_CPUS_PER_TASK", _NCPU))   # override: --set NUM_WORKERS=4
+DL_WORKERS = max(1, NUM_WORKERS - 1)          # DataLoader workers (1 core left for the main process)
 
 # ---- Precision ----
 # V100 has no bf16 / TF32: use fp16 autocast + GradScaler (fp32 master weights). Auto-disabled off CUDA.
 USE_AMP = True
 SEED = 42
+TEST_SEED = 2024       # independent seed: ONLY decides the test conversations, never change it
+N_TEST_CONV = 800      # fixed test conversations per language pair
 
 # ---- Data ----
 DATA_PATH = "SwitchLingua_text.csv"
@@ -47,7 +59,8 @@ def dur_class(run):
     """Duration class for a new segment of `run` units (1..3)."""
     return 1 + (run > 2) + (run > 7)
 
-LAMBDA_DUR = 1          # weight of the duration loss
+LAMBDA_DUR = 1          # weight of the whole duration loss (CE + EMD) relative to the switch loss
+LAMBDA_EMD = 0.5        # weight of the ordinal EMD term relative to the duration CE (shared by XLM-R and Qwen)
 
 # ---- Validation schedule ----
 # Fractions of an epoch at which to validate. 1.0 = epoch end. Dense-then-sparse in epoch 1 to catch the fast initial rise.
@@ -72,8 +85,7 @@ QWEN_BATCH_SIZE =  64      # On P100-12GB, use 8. On Macbook, use 16. On V100-32
 QWEN_EPOCHS = 4
 QWEN_LR = 5e-6
 QWEN_HEAD_LR = 1e-4
-DUR_SMOOTH = 0.1          # label smoothing for the duration loss
-LAMBDA_ORD = 0.5          # ordinal L1 penalty on the expected duration class
+DUR_SMOOTH = 0.1          # label smoothing for the duration CE (both models)
 
 # ---- LoRA (Qwen only) ----
 # USE_LORA=False: full fine-tuning, fp32 weights (original behaviour, e.g. 0.6B).

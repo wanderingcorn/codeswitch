@@ -2,6 +2,8 @@
 Results go to out/NAME/{results,history,config}.json"""
 import argparse, ast, json, os, time
 
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")   # avoid tokenizer deadlocks after fork
+
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", choices=["xlmr", "qwen", "baselines"], required=True)
 ap.add_argument("--name", required=True)
@@ -15,7 +17,8 @@ for kv in args.set:
     assert hasattr(C, k), f"unknown config key: {k}"
     setattr(C, k, ast.literal_eval(v))
 C.apply_pair_sel()
-print("PAIR_TAGS:", C.PAIR_TAGS, flush=True)
+print("PAIR_TAGS:", C.PAIR_TAGS, "| NUM_WORKERS:", C.NUM_WORKERS, flush=True)
+import torch; torch.set_num_threads(C.NUM_WORKERS)
 
 from codeswitch.utils import set_seed
 from codeswitch import data
@@ -26,15 +29,20 @@ set_seed(C.SEED)
 t0 = time.time()
 
 records = data.load_records(verbose=False)
-train_recs, val_recs = data.split_records(records)
+train_recs, val_recs, test_recs = data.split_records(records)   # test is fixed per pair (TEST_SEED, N_TEST_CONV)
+tr, va, te = (data.build_examples(r) for r in (train_recs, val_recs, test_recs))
+split_stats = {"train": data.label_stats(train_recs, tr, "train"),
+               "val":   data.label_stats(val_recs, va, "val"),
+               "test":  data.label_stats(test_recs, te, "test")}
+json.dump(split_stats, open(f"{out}/split_stats.json", "w"), indent=2)
+json.dump(sorted({r["conv"] for r in test_recs}), open(f"{out}/test_convs.json", "w"))   # to verify the test set is identical across runs
 hist = []
 
 if args.model == "baselines":
     from codeswitch import baselines
-    res = baselines.run_baselines(data.build_examples(train_recs), data.build_examples(val_recs))
+    res = baselines.run_baselines(tr, va)
 elif args.model == "xlmr":
     from codeswitch import xlmr
-    tr, va = data.build_examples(train_recs), data.build_examples(val_recs)
     tok, model, tdl, vdl = xlmr.build(tr, va)
     hist = xlmr.train(model, tdl, vdl)       # restores best epoch
     res = xlmr.evaluate(model, vdl)

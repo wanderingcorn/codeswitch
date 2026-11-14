@@ -11,11 +11,11 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModel
 
 from . import config as C
-from .data import make_examples
+from .data import make_examples, pmap
 from .lid import find_units, langs_of, PIECE_RE
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, autocast, sqrt_balanced_weights
+from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss
 
 
 def load_tokenizer():
@@ -67,11 +67,19 @@ def build_sample(text, tokenizer, pair=None):
     return {"input_ids": input_ids, "switch_labels": switch_labels, "dur_labels": dur_labels}
 
 
+_TOK = None   # set before the fork pool starts so child processes inherit it
+
+
+def _bs(r):
+    return build_sample(r["text"], _TOK, r["pair"])
+
+
 class QwenDataset(Dataset):
     def __init__(self, recs, tokenizer):
+        global _TOK
+        _TOK = tokenizer
         self.items, self.n_truncated = [], 0
-        for r in recs:
-            smp = build_sample(r["text"], tokenizer, r["pair"])
+        for r, smp in zip(recs, pmap(_bs, recs)):
             if any(l != C.IGNORE for l in smp["switch_labels"]):    # needs at least two units
                 self.n_truncated += len(smp["input_ids"]) > C.QWEN_MAX_LEN
                 it = {k: v[:C.QWEN_MAX_LEN] for k, v in smp.items()}  # right-truncation keeps earlier positions intact
@@ -115,7 +123,7 @@ def show_alignment(recs, tokenizer):
 
 
 class QwenSwitchDur(nn.Module):
-    def __init__(self, name, n_dur, switch_weights):
+    def __init__(self, name, n_dur, switch_weights, dur_w):
         super().__init__()
         # LoRA: frozen base can be fp16 (half the memory); full fine-tuning keeps fp32 master weights
         dec = AutoModel.from_pretrained(name, torch_dtype=torch.float16 if C.USE_LORA else torch.float32)
@@ -135,7 +143,7 @@ class QwenSwitchDur(nn.Module):
         self.switch_head = nn.Linear(hidden, 2)
         self.dur_head = nn.Linear(hidden, n_dur)
         self.register_buffer("switch_weights", switch_weights)
-        self.register_buffer("dur_idx", torch.arange(n_dur, dtype=torch.float))
+        self.register_buffer("dur_weights", dur_w)
 
     def forward(self, input_ids, attention_mask, switch_labels=None, dur_labels=None):
         with autocast():
@@ -148,16 +156,7 @@ class QwenSwitchDur(nn.Module):
             if (switch_labels != C.IGNORE).any():
                 l_sw = l_sw + F.cross_entropy(switch_logits.flatten(0, 1), switch_labels.flatten(),
                                               weight=self.switch_weights, ignore_index=C.IGNORE)
-            l_du = switch_logits.sum() * 0.0
-            m = dur_labels != C.IGNORE        # no-switch dur = 0
-            if m.any():
-                dl, y = dur_logits[m], dur_labels[m]
-                l_du = l_du + C.LAMBDA_DUR * F.cross_entropy(dl, y, label_smoothing=C.DUR_SMOOTH)
-                s = y > 0                      # ordinal only works when switch = 1
-                if s.any():
-                    p = dl[s][:, 1:].softmax(-1)               # ignore class 0
-                    exp = (p * self.dur_idx[1:]).sum(-1)       # exp = 1,2,3
-                    l_du = l_du + C.LAMBDA_ORD * (exp - y[s].float()).abs().mean()
+            l_du = duration_loss(dur_logits, dur_labels, self.dur_weights)   # only switch=1 positions
             out["loss"] = l_sw + l_du
             out["loss_sw"], out["loss_du"] = l_sw.detach(), l_du.detach()
         return out
@@ -170,13 +169,17 @@ def build(train_recs, val_recs):
     train_ds, val_ds = QwenDataset(train_recs, tok), QwenDataset(val_recs, tok)
     print(f"{train_ds.n_truncated} / {len(train_recs)} training sentences exceed QWEN_MAX_LEN={C.QWEN_MAX_LEN} tokens (tail labels dropped)")
     collate = make_collate(tok)
-    train_dl = DataLoader(train_ds, batch_size=C.QWEN_BATCH_SIZE, shuffle=True, collate_fn=collate)
-    val_dl = DataLoader(val_ds, batch_size=16, collate_fn=collate)
+    train_dl = DataLoader(train_ds, batch_size=C.QWEN_BATCH_SIZE, shuffle=True, collate_fn=collate,
+                          num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+    val_dl = DataLoader(val_ds, batch_size=16, collate_fn=collate,
+                        num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
 
     sw = [l for it in train_ds.items for l in it["switch_labels"] if l != C.IGNORE]
     weights = sqrt_balanced_weights(sw)
     print("switch class weights:", weights.tolist())
-    model = QwenSwitchDur(C.QWEN_NAME, C.N_DUR, weights).to(DEVICE)
+    dw = dur_weights([l for it in train_ds.items for l in it["dur_labels"] if l != C.IGNORE])
+    print("duration class weights (1..3):", dw.tolist())
+    model = QwenSwitchDur(C.QWEN_NAME, C.N_DUR, weights, dw).to(DEVICE)
     n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
     n_all = sum(p.numel() for p in model.parameters())
     print(f"{C.QWEN_NAME} | LoRA={C.USE_LORA} | trainable {n_tr / 1e6:.1f}M / {n_all / 1e6:.1f}M params")

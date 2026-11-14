@@ -1,4 +1,6 @@
 # name  model  overrides (KEY=VALUE, space separated)
 # model: xlmr | qwen | baselines
-yue_q06b               qwen  QWEN_NAME="Qwen/Qwen3-0.6B-Base" QWEN_BATCH_SIZE=64 USE_LORA=False QWEN_EPOCHS=3 MAX_CONV_PER_PAIR=10000
-yue_q4b_lora           qwen  QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4 QWEN_EPOCHS=1 MAX_CONV_PER_PAIR=10000
+baselines       baselines   PAIR_SEL="all" MAX_CONV_PER_PAIR=300
+all_xlmr_300    xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   
+all_qwen_300    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   QWEN_EPOCHS=1   
+all_qw4b_300    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=300   QWEN_EPOCHS=1 QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4

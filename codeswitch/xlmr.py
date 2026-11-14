@@ -13,7 +13,7 @@ from . import config as C
 from .lid import find_units
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, autocast, sqrt_balanced_weights
+from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss
 
 
 def load_tokenizer():
@@ -24,17 +24,11 @@ def load_tokenizer():
 
 class SwitchDurDataset(Dataset):
     def __init__(self, raw, tokenizer):
-        self.items = []
-        for e in raw:
-            # The prediction slot is a <mask> token appended to the prefix (same as at inference time)
-            enc = tokenizer(e["text"] + tokenizer.mask_token, truncation=True, max_length=C.MAX_LEN)
-            self.items.append({
-                "input_ids": enc["input_ids"],
-                "attention_mask": enc["attention_mask"],
-                "switch_labels": e["switch"],
-                "dur_labels": e["duration"],
-                "pair": e["pair"],
-            })
+        # The prediction slot is a <mask> token appended to the prefix (same as at inference time); batch tokenization
+        enc = tokenizer([e["text"] + tokenizer.mask_token for e in raw], truncation=True, max_length=C.MAX_LEN)
+        self.items = [{"input_ids": ids, "attention_mask": am, "switch_labels": e["switch"],
+                       "dur_labels": e["duration"], "pair": e["pair"]}
+                      for ids, am, e in zip(enc["input_ids"], enc["attention_mask"], raw)]
 
     def __len__(self): return len(self.items)
     def __getitem__(self, i): return self.items[i]
@@ -81,7 +75,7 @@ def make_collate(tokenizer):
 
 
 class SwitchDurModel(nn.Module):
-    def __init__(self, name, n_dur, switch_weights, mask_token_id):
+    def __init__(self, name, n_dur, switch_weights, dur_w, mask_token_id):
         super().__init__()
         self.encoder = AutoModel.from_pretrained(name)
         hidden = self.encoder.config.hidden_size
@@ -90,6 +84,7 @@ class SwitchDurModel(nn.Module):
         self.dur_head = nn.Linear(hidden, n_dur)
         self.mask_token_id = mask_token_id
         self.register_buffer("switch_weights", switch_weights)
+        self.register_buffer("dur_weights", dur_w)
 
     def forward(self, input_ids, attention_mask, switch_labels=None, dur_labels=None):
         with autocast():
@@ -101,9 +96,7 @@ class SwitchDurModel(nn.Module):
         out = {"switch_logits": switch_logits, "dur_logits": dur_logits}
         if switch_labels is not None:
             l_sw = F.cross_entropy(switch_logits, switch_labels, weight=self.switch_weights)
-            l_du = switch_logits.new_zeros(())
-            if (dur_labels != C.IGNORE).any():
-                l_du = C.LAMBDA_DUR * F.cross_entropy(dur_logits, dur_labels, ignore_index=C.IGNORE)
+            l_du = duration_loss(dur_logits, dur_labels, self.dur_weights)   # only switch=1 positions
             out["loss"] = l_sw + l_du
             out["loss_sw"], out["loss_du"] = l_sw.detach(), l_du.detach()
         return out
@@ -121,12 +114,16 @@ def build(train_raw, val_raw):
     train_ds, val_ds = SwitchDurDataset(train_ds_raw, tok), SwitchDurDataset(val_raw, tok)
     train_lens = [len(x["input_ids"]) for x in train_ds.items]
     val_lens = [len(x["input_ids"]) for x in val_ds.items]
-    train_dl = DataLoader(train_ds, batch_sampler=BucketBatchSampler(train_lens, C.BATCH_SIZE), collate_fn=collate)
-    val_dl = DataLoader(val_ds, batch_sampler=BucketBatchSampler(val_lens, C.VAL_BATCH_SIZE, shuffle=False), collate_fn=collate)
+    train_dl = DataLoader(train_ds, batch_sampler=BucketBatchSampler(train_lens, C.BATCH_SIZE), collate_fn=collate,
+                          num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+    val_dl = DataLoader(val_ds, batch_sampler=BucketBatchSampler(val_lens, C.VAL_BATCH_SIZE, shuffle=False), collate_fn=collate,
+                        num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
 
     weights = sqrt_balanced_weights(sw)
     print("switch class weights:", weights.tolist())
-    model = SwitchDurModel(C.XLMR_NAME, C.N_DUR, weights, tok.mask_token_id).to(DEVICE)
+    dw = dur_weights([e["duration"] for e in train_ds_raw])
+    print("duration class weights (1..3):", dw.tolist())
+    model = SwitchDurModel(C.XLMR_NAME, C.N_DUR, weights, dw, tok.mask_token_id).to(DEVICE)
     return tok, model, train_dl, val_dl
 
 

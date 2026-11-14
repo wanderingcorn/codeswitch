@@ -11,6 +11,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
 from . import config as C
+from .data import pmap
 from .lid import find_units, langs_of
 from .metrics import score
 
@@ -72,13 +73,22 @@ def _b2(tr, va, k=6):
                  sw_prob=clf_sw.predict_proba(X_va)[:, 1])
 
 
+_TR = _VA = None   # set before the fork pool starts
+
+
+def _one(tag):
+    tr = [e for e in _TR if e["pair"] == tag]
+    va = [e for e in _VA if e["pair"] == tag]
+    b0a, b0n = _b0(tr, va)
+    return tag, b0a, b0n, _b1(tag, tr, va), _b2(tr, va)
+
+
 def run_baselines(train_raw, val_raw):
-    """Return {baseline_name: {pair: score_dict}}."""
+    """Return {baseline_name: {pair: score_dict}}. One process per language pair."""
+    global _TR, _VA
+    _TR, _VA = train_raw, val_raw
     res = {"B0 always-switch": {}, "B0 never-switch": {}, "B1 lookup": {}, "B2 char-ngram LR": {}}
-    for tag in C.PAIR_TAGS:
-        tr = [e for e in train_raw if e["pair"] == tag]
-        va = [e for e in val_raw if e["pair"] == tag]
-        res["B0 always-switch"][tag], res["B0 never-switch"][tag] = _b0(tr, va)
-        res["B1 lookup"][tag] = _b1(tag, tr, va)
-        res["B2 char-ngram LR"][tag] = _b2(tr, va)
+    for tag, a, n, b1, b2 in pmap(_one, C.PAIR_TAGS, chunksize=1, min_items=2):
+        res["B0 always-switch"][tag], res["B0 never-switch"][tag] = a, n
+        res["B1 lookup"][tag], res["B2 char-ngram LR"][tag] = b1, b2
     return res
