@@ -4,8 +4,8 @@
 #SBATCH --gres=gpu:v100-sxm2:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
-#SBATCH --time=00:15:00
-#SBATCH --array=4
+#SBATCH --time=08:00:00
+#SBATCH --array=1-2
 #SBATCH --output=logs/%x_%A_%a.out
 
 source ~/codeswitch/.venv/bin/activate

@@ -14,6 +14,8 @@ for kv in args.set:
     k, v = kv.split("=", 1)
     assert hasattr(C, k), f"unknown config key: {k}"
     setattr(C, k, ast.literal_eval(v))
+C.apply_pair_sel()
+print("PAIR_TAGS:", C.PAIR_TAGS, flush=True)
 
 from codeswitch.utils import set_seed
 from codeswitch import data

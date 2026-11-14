@@ -12,18 +12,38 @@
   "LAMBDA_DUR": 1,
   "LAMBDA_ORD": 0.5,
   "LR": 1e-05,
-  "MAX_CONV_PER_PAIR": 3000,
-  "MAX_LEN": 6,
+  "MAX_CONV_PER_PAIR": 10000,
+  "MAX_LEN": 128,
   "MIN_UNITS": 2,
   "N_DUR": 4,
   "PAIR2ID": {
-    "yue-en": 0
+    "hi-en": 0,
+    "yue-en": 1,
+    "es-en": 2,
+    "ar-en": 3,
+    "de-en": 4,
+    "vi-en": 5,
+    "ja-en": 6,
+    "ko-en": 7,
+    "fr-en": 8,
+    "ru-en": 9,
+    "it-en": 10,
+    "zh-en": 11
   },
-  "PAIR_SEL": [
-    "yue-en"
-  ],
+  "PAIR_SEL": "all",
   "PAIR_TAGS": [
-    "yue-en"
+    "hi-en",
+    "yue-en",
+    "es-en",
+    "ar-en",
+    "de-en",
+    "vi-en",
+    "ja-en",
+    "ko-en",
+    "fr-en",
+    "ru-en",
+    "it-en",
+    "zh-en"
   ],
   "QWEN_BATCH_SIZE": 64,
   "QWEN_EPOCHS": 4,
@@ -38,9 +58,9 @@
   "XLMR_NAME": "xlm-roberta-base",
   "model": "xlmr",
   "overrides": [
-    "MAX_LEN=6",
-    "EPOCHS=3",
-    "MAX_CONV_PER_PAIR=3000"
+    "PAIR_SEL='all'",
+    "MAX_CONV_PER_PAIR=10000",
+    "EPOCHS=3"
   ],
-  "minutes": 9.3
+  "minutes": 214.6
 }
