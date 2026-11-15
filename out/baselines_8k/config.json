@@ -22,7 +22,7 @@
   "KEEP_NEG": 1.0,
   "L1_MIN_SHARE": 0.1,
   "LAMBDA_DUR": 1,
-  "LAMBDA_EMD": 0.5,
+  "LAMBDA_EMD": 0.0,
   "LORA_ALPHA": 32,
   "LORA_DROPOUT": 0.05,
   "LORA_R": 16,
@@ -89,5 +89,5 @@
     "PAIR_SEL=\"all\"",
     "MAX_CONV_PER_PAIR=8000"
   ],
-  "minutes": 10.9
+  "minutes": 15.0
 }
