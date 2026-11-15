@@ -1,0 +1,113 @@
+== all_xlmr_8k_dur08 | xlmr | PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.8 ==
+PAIR_TAGS: ['hi-en', 'yue-en', 'es-en', 'ar-en', 'de-en', 'vi-en', 'ja-en', 'ko-en', 'fr-en', 'ru-en', 'it-en', 'zh-en'] | NUM_WORKERS: 4
+[train] ALL     conv 79700 | sent 263644 | ex 5445450 | switch(0/1) [4882981, 562469] | dur(0/1/2/3) [4882981, 205023, 152275, 205171]
+[train] hi-en   conv  6822 | sent  21711 | ex  393559 | switch(0/1) [361622, 31937] | dur(0/1/2/3) [361622, 16752, 8248, 6937]
+[train] yue-en  conv  7080 | sent  36751 | ex  760849 | switch(0/1) [691410, 69439] | dur(0/1/2/3) [691410, 23918, 24681, 20840]
+[train] es-en   conv  6579 | sent  19902 | ex  373627 | switch(0/1) [329621, 44006] | dur(0/1/2/3) [329621, 15023, 13305, 15678]
+[train] ar-en   conv  6974 | sent  21860 | ex  317522 | switch(0/1) [274990, 42532] | dur(0/1/2/3) [274990, 16712, 11625, 14195]
+[train] de-en   conv  5417 | sent  15479 | ex  277507 | switch(0/1) [243267, 34240] | dur(0/1/2/3) [243267, 12491, 9728, 12021]
+[train] vi-en   conv  6890 | sent  21878 | ex  479004 | switch(0/1) [423918, 55086] | dur(0/1/2/3) [423918, 23422, 14056, 17608]
+[train] ja-en   conv  6825 | sent  22655 | ex  800311 | switch(0/1) [746426, 53885] | dur(0/1/2/3) [746426, 16583, 9160, 28142]
+[train] ko-en   conv  6719 | sent  20637 | ex  311350 | switch(0/1) [260444, 50906] | dur(0/1/2/3) [260444, 19205, 12994, 18707]
+[train] fr-en   conv  6543 | sent  19097 | ex  357058 | switch(0/1) [316110, 40948] | dur(0/1/2/3) [316110, 13916, 11795, 15237]
+[train] ru-en   conv  6496 | sent  19944 | ex  319868 | switch(0/1) [276888, 42980] | dur(0/1/2/3) [276888, 16519, 12890, 13571]
+[train] it-en   conv  6462 | sent  19636 | ex  358982 | switch(0/1) [318484, 40498] | dur(0/1/2/3) [318484, 13391, 11525, 15582]
+[train] zh-en   conv  6893 | sent  24094 | ex  695813 | switch(0/1) [639801, 56012] | dur(0/1/2/3) [639801, 17091, 12268, 26653]
+[val  ] ALL     conv  8848 | sent  29393 | ex  607775 | switch(0/1) [545446, 62329] | dur(0/1/2/3) [545446, 22408, 16900, 23021]
+[val  ] hi-en   conv   758 | sent   2384 | ex   43241 | switch(0/1) [39970, 3271] | dur(0/1/2/3) [39970, 1663, 836, 772]
+[val  ] yue-en  conv   786 | sent   4103 | ex   85474 | switch(0/1) [77852, 7622] | dur(0/1/2/3) [77852, 2454, 2773, 2395]
+[val  ] es-en   conv   731 | sent   2208 | ex   40852 | switch(0/1) [35958, 4894] | dur(0/1/2/3) [35958, 1787, 1481, 1626]
+[val  ] ar-en   conv   774 | sent   2464 | ex   35697 | switch(0/1) [31043, 4654] | dur(0/1/2/3) [31043, 1769, 1244, 1641]
+[val  ] de-en   conv   601 | sent   1756 | ex   32020 | switch(0/1) [28170, 3850] | dur(0/1/2/3) [28170, 1353, 1034, 1463]
+[val  ] vi-en   conv   765 | sent   2432 | ex   53485 | switch(0/1) [47320, 6165] | dur(0/1/2/3) [47320, 2631, 1602, 1932]
+[val  ] ja-en   conv   758 | sent   2585 | ex   91214 | switch(0/1) [85020, 6194] | dur(0/1/2/3) [85020, 1883, 1109, 3202]
+[val  ] ko-en   conv   746 | sent   2325 | ex   35265 | switch(0/1) [29517, 5748] | dur(0/1/2/3) [29517, 2176, 1402, 2170]
+[val  ] fr-en   conv   726 | sent   2116 | ex   40077 | switch(0/1) [35508, 4569] | dur(0/1/2/3) [35508, 1608, 1216, 1745]
+[val  ] ru-en   conv   721 | sent   2248 | ex   36619 | switch(0/1) [31707, 4912] | dur(0/1/2/3) [31707, 1825, 1573, 1514]
+[val  ] it-en   conv   717 | sent   2133 | ex   38187 | switch(0/1) [33898, 4289] | dur(0/1/2/3) [33898, 1411, 1208, 1670]
+[val  ] zh-en   conv   765 | sent   2639 | ex   75644 | switch(0/1) [69483, 6161] | dur(0/1/2/3) [69483, 1848, 1422, 2891]
+[test ] ALL     conv  9587 | sent  31377 | ex  644981 | switch(0/1) [577775, 67206] | dur(0/1/2/3) [577775, 24267, 18277, 24662]
+[test ] hi-en   conv   799 | sent   2586 | ex   46565 | switch(0/1) [42365, 4200] | dur(0/1/2/3) [42365, 2150, 1107, 943]
+[test ] yue-en  conv   788 | sent   4034 | ex   82772 | switch(0/1) [75511, 7261] | dur(0/1/2/3) [75511, 2390, 2606, 2265]
+[test ] es-en   conv   800 | sent   2407 | ex   45510 | switch(0/1) [40180, 5330] | dur(0/1/2/3) [40180, 1796, 1604, 1930]
+[test ] ar-en   conv   800 | sent   2467 | ex   35902 | switch(0/1) [30952, 4950] | dur(0/1/2/3) [30952, 1983, 1335, 1632]
+[test ] de-en   conv   800 | sent   2344 | ex   42277 | switch(0/1) [37078, 5199] | dur(0/1/2/3) [37078, 1798, 1523, 1878]
+[test ] vi-en   conv   800 | sent   2486 | ex   54548 | switch(0/1) [48377, 6171] | dur(0/1/2/3) [48377, 2564, 1631, 1976]
+[test ] ja-en   conv   800 | sent   2637 | ex   93340 | switch(0/1) [87014, 6326] | dur(0/1/2/3) [87014, 1962, 1067, 3297]
+[test ] ko-en   conv   800 | sent   2416 | ex   36945 | switch(0/1) [31011, 5934] | dur(0/1/2/3) [31011, 2119, 1618, 2197]
+[test ] fr-en   conv   800 | sent   2343 | ex   43338 | switch(0/1) [38309, 5029] | dur(0/1/2/3) [38309, 1769, 1415, 1845]
+[test ] ru-en   conv   800 | sent   2433 | ex   39544 | switch(0/1) [34113, 5431] | dur(0/1/2/3) [34113, 2080, 1621, 1730]
+[test ] it-en   conv   800 | sent   2396 | ex   44966 | switch(0/1) [39941, 5025] | dur(0/1/2/3) [39941, 1710, 1341, 1974]
+[test ] zh-en   conv   800 | sent   2828 | ex   79274 | switch(0/1) [72924, 6350] | dur(0/1/2/3) [72924, 1946, 1409, 2995]
+downsampling: 5445450 -> 5445450, switch=1 share 10.3%
+switch class weights: [0.7467227578163147, 2.2001514434814453]
+duration class weights (1..3): [0.9562850594520569, 1.109620213508606, 0.9559400677680969]
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+[mem XLM-R step 0] CUDA alloc 3.4 GB | RSS 28.5 GB
+epoch 1 step 2659/42543 (ep 0.063): train loss 1.2535 (sw 0.4284 | dur 0.8250)
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+  [monitor] SW: PR-AUC 0.684 | Antic-F1 0.628 (max 0.637 @thr 0.600) || DUR: Acc 0.564 | MacroF1 0.514
+  ^ best so far
+[mem XLM-R step 2659] CUDA alloc 3.4 GB | RSS 28.5 GB
+epoch 1 step 5318/42543 (ep 0.125): train loss 1.0470 (sw 0.2859 | dur 0.7611)
+  [monitor] SW: PR-AUC 0.729 | Antic-F1 0.652 (max 0.676 @thr 0.715) || DUR: Acc 0.596 | MacroF1 0.580
+  ^ best so far
+[mem XLM-R step 5318] CUDA alloc 3.4 GB | RSS 28.5 GB
+epoch 1 step 10636/42543 (ep 0.250): train loss 0.9987 (sw 0.2630 | dur 0.7357)
+  [monitor] SW: PR-AUC 0.757 | Antic-F1 0.673 (max 0.692 @thr 0.675) || DUR: Acc 0.611 | MacroF1 0.593
+  ^ best so far
+[mem XLM-R step 10636] CUDA alloc 3.4 GB | RSS 28.5 GB
+epoch 1 step 21272/42543 (ep 0.500): train loss 0.9588 (sw 0.2429 | dur 0.7159)
+  [monitor] SW: PR-AUC 0.774 | Antic-F1 0.687 (max 0.705 @thr 0.655) || DUR: Acc 0.625 | MacroF1 0.598
+  ^ best so far
+[mem XLM-R step 21272] CUDA alloc 3.4 GB | RSS 28.5 GB
+epoch 1 step 42543/42543 (ep 1.000): train loss 0.9351 (sw 0.2315 | dur 0.7035)
+  [monitor] SW: PR-AUC 0.789 | Antic-F1 0.710 (max 0.717 @thr 0.599) || DUR: Acc 0.612 | MacroF1 0.606
+  ^ best so far
+[mem XLM-R step 42543] CUDA alloc 3.4 GB | RSS 28.4 GB
+epoch 2 step 42543/42543 (ep 2.000): train loss 0.8917 (sw 0.2159 | dur 0.6758)
+  [monitor] SW: PR-AUC 0.797 | Antic-F1 0.710 (max 0.723 @thr 0.656) || DUR: Acc 0.631 | MacroF1 0.611
+  ^ best so far
+[mem XLM-R step 85086] CUDA alloc 3.4 GB | RSS 28.4 GB
+val: best switch-F1 0.723 @ thr 0.6557
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+test [ALL   ] {'switch_PR_AUC': 0.797, 'dur_macro_F1': 0.611, 'switch_P': 0.72, 'switch_R': 0.724, 'switch_F1': 0.722, 'dur_R1': 0.716, 'dur_R2': 0.418, 'dur_R3': 0.702, 'switch_F1max': 0.723, 'switch_thr': 0.6774, 'joint_acc': 0.915, 'dur_acc': 0.63, 'dur_MAE': 0.469, 'val_ce_sw': 0.1719, 'val_ce_dur': 0.8174, 'val_loss': np.float64(0.8692), 'val_loss_sw': np.float64(0.217), 'val_loss_dur': np.float64(0.6522), 'threshold': 0.6557}
+test [hi-en ] {'switch_PR_AUC': 0.832, 'dur_macro_F1': 0.597, 'switch_P': 0.741, 'switch_R': 0.746, 'switch_F1': 0.744, 'dur_R1': 0.797, 'dur_R2': 0.356, 'dur_R3': 0.638, 'switch_F1max': 0.747, 'switch_thr': 0.6959, 'joint_acc': 0.928, 'dur_acc': 0.645, 'dur_MAE': 0.415, 'val_ce_sw': 0.1255, 'val_ce_dur': 0.7452}
+test [yue-en] {'switch_PR_AUC': 0.647, 'dur_macro_F1': 0.631, 'switch_P': 0.655, 'switch_R': 0.541, 'switch_F1': 0.593, 'dur_R1': 0.713, 'dur_R2': 0.634, 'dur_R3': 0.531, 'switch_F1max': 0.6, 'switch_thr': 0.5831, 'joint_acc': 0.915, 'dur_acc': 0.628, 'dur_MAE': 0.406, 'val_ce_sw': 0.2046, 'val_ce_dur': 0.7964}
+test [es-en ] {'switch_PR_AUC': 0.762, 'dur_macro_F1': 0.591, 'switch_P': 0.69, 'switch_R': 0.711, 'switch_F1': 0.701, 'dur_R1': 0.69, 'dur_R2': 0.45, 'dur_R3': 0.639, 'switch_F1max': 0.702, 'switch_thr': 0.6165, 'joint_acc': 0.898, 'dur_acc': 0.599, 'dur_MAE': 0.501, 'val_ce_sw': 0.2059, 'val_ce_dur': 0.8624}
+test [ar-en ] {'switch_PR_AUC': 0.805, 'dur_macro_F1': 0.608, 'switch_P': 0.725, 'switch_R': 0.723, 'switch_F1': 0.724, 'dur_R1': 0.728, 'dur_R2': 0.422, 'dur_R3': 0.673, 'switch_F1max': 0.726, 'switch_thr': 0.6229, 'joint_acc': 0.889, 'dur_acc': 0.627, 'dur_MAE': 0.487, 'val_ce_sw': 0.2156, 'val_ce_dur': 0.8355}
+test [de-en ] {'switch_PR_AUC': 0.826, 'dur_macro_F1': 0.569, 'switch_P': 0.734, 'switch_R': 0.808, 'switch_F1': 0.769, 'dur_R1': 0.717, 'dur_R2': 0.372, 'dur_R3': 0.635, 'switch_F1max': 0.771, 'switch_thr': 0.6891, 'joint_acc': 0.9, 'dur_acc': 0.586, 'dur_MAE': 0.53, 'val_ce_sw': 0.1795, 'val_ce_dur': 0.8916}
+test [vi-en ] {'switch_PR_AUC': 0.735, 'dur_macro_F1': 0.578, 'switch_P': 0.686, 'switch_R': 0.668, 'switch_F1': 0.677, 'dur_R1': 0.761, 'dur_R2': 0.358, 'dur_R3': 0.622, 'switch_F1max': 0.678, 'switch_thr': 0.6165, 'joint_acc': 0.899, 'dur_acc': 0.61, 'dur_MAE': 0.499, 'val_ce_sw': 0.2121, 'val_ce_dur': 0.8545}
+test [ja-en ] {'switch_PR_AUC': 0.842, 'dur_macro_F1': 0.599, 'switch_P': 0.748, 'switch_R': 0.758, 'switch_F1': 0.753, 'dur_R1': 0.744, 'dur_R2': 0.172, 'dur_R3': 0.886, 'switch_F1max': 0.758, 'switch_thr': 0.6914, 'joint_acc': 0.953, 'dur_acc': 0.721, 'dur_MAE': 0.387, 'val_ce_sw': 0.1019, 'val_ce_dur': 0.6876}
+test [ko-en ] {'switch_PR_AUC': 0.938, 'dur_macro_F1': 0.615, 'switch_P': 0.867, 'switch_R': 0.875, 'switch_F1': 0.871, 'dur_R1': 0.686, 'dur_R2': 0.395, 'dur_R3': 0.77, 'switch_F1max': 0.874, 'switch_thr': 0.7308, 'joint_acc': 0.906, 'dur_acc': 0.638, 'dur_MAE': 0.481, 'val_ce_sw': 0.1366, 'val_ce_dur': 0.8198}
+test [fr-en ] {'switch_PR_AUC': 0.793, 'dur_macro_F1': 0.589, 'switch_P': 0.715, 'switch_R': 0.736, 'switch_F1': 0.726, 'dur_R1': 0.712, 'dur_R2': 0.405, 'dur_R3': 0.657, 'switch_F1max': 0.727, 'switch_thr': 0.6478, 'joint_acc': 0.904, 'dur_acc': 0.605, 'dur_MAE': 0.502, 'val_ce_sw': 0.1904, 'val_ce_dur': 0.8622}
+test [ru-en ] {'switch_PR_AUC': 0.756, 'dur_macro_F1': 0.623, 'switch_P': 0.689, 'switch_R': 0.706, 'switch_F1': 0.697, 'dur_R1': 0.697, 'dur_R2': 0.52, 'dur_R3': 0.653, 'switch_F1max': 0.701, 'switch_thr': 0.5812, 'joint_acc': 0.882, 'dur_acc': 0.63, 'dur_MAE': 0.472, 'val_ce_sw': 0.239, 'val_ce_dur': 0.8304}
+test [it-en ] {'switch_PR_AUC': 0.762, 'dur_macro_F1': 0.6, 'switch_P': 0.681, 'switch_R': 0.712, 'switch_F1': 0.696, 'dur_R1': 0.66, 'dur_R2': 0.45, 'dur_R3': 0.691, 'switch_F1max': 0.699, 'switch_thr': 0.7007, 'joint_acc': 0.902, 'dur_acc': 0.616, 'dur_MAE': 0.493, 'val_ce_sw': 0.2018, 'val_ce_dur': 0.8517}
+test [zh-en ] {'switch_PR_AUC': 0.805, 'dur_macro_F1': 0.565, 'switch_P': 0.71, 'switch_R': 0.758, 'switch_F1': 0.733, 'dur_R1': 0.665, 'dur_R2': 0.231, 'dur_R3': 0.814, 'switch_F1max': 0.735, 'switch_thr': 0.6297, 'joint_acc': 0.935, 'dur_acc': 0.639, 'dur_MAE': 0.477, 'val_ce_sw': 0.1326, 'val_ce_dur': 0.7939}
+
+TEST per language pair (thr=0.6557):
+        Anticipatory_F1  dur_acc
+hi-en            0.7440   0.6450
+yue-en           0.5930   0.6280
+es-en            0.7010   0.5990
+ar-en            0.7240   0.6270
+de-en            0.7690   0.5860
+vi-en            0.6770   0.6100
+ja-en            0.7530   0.7210
+ko-en            0.8710   0.6380
+fr-en            0.7260   0.6050
+ru-en            0.6970   0.6300
+it-en            0.6960   0.6160
+zh-en            0.7330   0.6390
+MEAN             0.7237   0.6287
+STD              0.0649   0.0341
+POOLED           0.7220   0.6300
+/home/lu.suo/codeswitch/codeswitch/plots.py:29: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  a.set_xlabel("epoch"); a.legend(); a.grid(alpha=.3)
+done: out/all_xlmr_8k_dur08 (139.0 min)
