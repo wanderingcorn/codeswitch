@@ -60,7 +60,7 @@ def dur_class(run):
     return 1 + (run > 2) + (run > 7)
 
 LAMBDA_DUR = 1          # weight of the whole duration loss (CE + EMD) relative to the switch loss
-LAMBDA_EMD = 0.5        # weight of the ordinal EMD term relative to the duration CE (shared by XLM-R and Qwen)
+LAMBDA_EMD = 0.0        # weight of the ordinal EMD term relative to the duration CE (shared by XLM-R and Qwen)
 
 # ---- Validation schedule ----
 # Fractions of an epoch at which to validate. 1.0 = epoch end. Dense-then-sparse in epoch 1 to catch the fast initial rise.

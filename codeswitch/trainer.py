@@ -3,7 +3,7 @@ import torch
 from transformers import get_linear_schedule_with_warmup
 
 from . import config as C
-from .metrics import print_scores
+from .metrics import monitor_line
 from .utils import DEVICE, amp_enabled, check_mem, free, mem
 
 HEAD_PREFIX = ("switch_head", "dur_head")
@@ -66,8 +66,9 @@ def fit(model, train_dl, val_dl, evaluate_fn, epochs, lr, head_lr,
                       f"train loss {win[0] / k:.4f} (sw {win[1] / k:.4f} | dur {win[2] / k:.4f})")
                 res = evaluate_fn(model, val_dl)
                 model.train()                     # evaluate_fn switches to eval mode
-                print_scores("  val", res)
-                history.append({"step": gstep, "epoch": round(gstep / n, 3), "res": res})
+                print(monitor_line(res))
+                history.append({"step": gstep, "epoch": round(gstep / n, 3), "res": res,
+                                "train": {"loss": win[0] / k, "loss_sw": win[1] / k, "loss_dur": win[2] / k}})
                 if keep_best and select_score(res) > best:
                     best = select_score(res)
                     best_state = {nm: p.detach().cpu().clone() for nm, p in model.named_parameters() if p.requires_grad}   # trainable only (LoRA: tiny)

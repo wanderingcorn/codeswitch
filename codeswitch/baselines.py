@@ -1,8 +1,9 @@
-"""Naive baselines, trained and evaluated separately for each language pair.
+"""Naive baselines, trained JOINTLY on all selected language pairs (same setup as XLM-R / Qwen) and
+evaluated on the pooled set ("ALL") and per language pair.
 
 B0  prior:  always / never predict a switch; duration = most common class
 B1  lookup: P(switch | current language, run length, trailing punctuation); duration = mode per language
-B2  char n-gram TF-IDF + logistic regression on the last 6 characters
+B2  char n-gram TF-IDF + logistic regression on the last 6 characters (one model for all pairs)
 """
 from collections import Counter, defaultdict
 
@@ -26,69 +27,74 @@ def feats(text, pair=None):
     return (langs[-1], min(run, 6), trailing)
 
 
-def _gold(va):
-    return [e["switch"] for e in va], [e["duration"] for e in va]
+def _gold(ev):
+    return np.array([e["switch"] for e in ev]), np.array([e["duration"] for e in ev])
 
 
-def _b0(tr, va):
-    du_mode = Counter(e["duration"] for e in tr if e["duration"] > 0).most_common(1)[0][0]
-    va_sw, va_du = _gold(va)
-    n = len(va)
-    return (score([1] * n, va_sw, [du_mode] * n, va_du),
-            score([0] * n, va_sw, [du_mode] * n, va_du))
+def _feat(e):                                              # module-level for the fork pool
+    return feats(e["text"], e["pair"])
 
 
-def _b1(tag, tr, va, a=2.0):
-    prior = float(np.mean([e["switch"] for e in tr]))
-    du_mode = Counter(e["duration"] for e in tr if e["duration"] > 0).most_common(1)[0][0]
-    sw_tab = defaultdict(lambda: [0, 0])    # feats -> [no-switch count, switch count]
-    du_tab = defaultdict(Counter)           # current language -> duration counts (switch=1 only)
-    for e in tr:
-        key = feats(e["text"], tag)
+def _report(ev, sw_pred, du_pred, sw_prob=None):
+    """{"ALL": ..., "<pair>": ...} like the neural models."""
+    sw_g, du_g = _gold(ev)
+    sw_pred, du_pred = np.asarray(sw_pred), np.asarray(du_pred)
+    pairs = np.array([e["pair"] for e in ev])
+    sw_prob = None if sw_prob is None else np.asarray(sw_prob)
+
+    def sub(m):
+        return score(sw_pred[m], sw_g[m], du_pred[m], du_g[m], sw_prob=None if sw_prob is None else sw_prob[m])
+
+    out = {"ALL": sub(np.ones(len(ev), dtype=bool))}
+    for tag in C.PAIR_TAGS:
+        m = pairs == tag
+        if m.any():
+            out[tag] = sub(m)
+    return out
+
+
+def _du_mode(tr):
+    return Counter(e["duration"] for e in tr if e["duration"] > 0).most_common(1)[0][0]
+
+
+def _b0(tr, ev):
+    n, mode = len(ev), _du_mode(tr)
+    return (_report(ev, [1] * n, [mode] * n), _report(ev, [0] * n, [mode] * n))
+
+
+def _b1(tr, ev, a=2.0):
+    prior = float(np.mean([e["switch"] for e in tr]))      # global base rate
+    mode = _du_mode(tr)
+    sw_tab = defaultdict(lambda: [0, 0])                   # feats -> [no-switch count, switch count]
+    du_tab = defaultdict(Counter)                          # current language -> duration counts (switch=1 only)
+    for e, key in zip(tr, pmap(_feat, tr)):
         sw_tab[key][e["switch"]] += 1
         if e["duration"] > 0:
             du_tab[key[0]][e["duration"]] += 1
     sw_pred, du_pred, probs = [], [], []
-    for e in va:
-        key = feats(e["text"], tag)
+    for e, key in zip(ev, pmap(_feat, ev)):
         n0, n1 = sw_tab.get(key, (0, 0))
-        p = (n1 + a * prior) / (n0 + n1 + a)              # smooth toward the global prior
+        p = (n1 + a * prior) / (n0 + n1 + a)               # smooth toward the global prior
         probs.append(p)
-        sw_pred.append(int(p > prior))                    # threshold at the base rate (like class weights in XLM-R)
-        du_pred.append(du_tab[key[0]].most_common(1)[0][0] if du_tab[key[0]] else du_mode)
-    va_sw, va_du = _gold(va)
-    return score(sw_pred, va_sw, du_pred, va_du, sw_prob=probs)
+        sw_pred.append(int(p > prior))                     # threshold at the base rate
+        c = du_tab.get(key[0])
+        du_pred.append(c.most_common(1)[0][0] if c else mode)
+    return _report(ev, sw_pred, du_pred, sw_prob=probs)
 
 
-def _b2(tr, va, k=6):
-    tail = lambda t: t[-k:]                               # current unit + the punctuation just typed
+def _b2(tr, ev, k=6):
+    tail = lambda t: t[-k:]                                # current unit + the punctuation just typed
     vec = TfidfVectorizer(analyzer="char", ngram_range=(1, 3))
     X_tr = vec.fit_transform([tail(e["text"]) for e in tr])
-    X_va = vec.transform([tail(e["text"]) for e in va])
+    X_ev = vec.transform([tail(e["text"]) for e in ev])
     clf_sw = LogisticRegression(class_weight="balanced", max_iter=1000).fit(X_tr, [e["switch"] for e in tr])
     has_dur = np.array([e["duration"] > 0 for e in tr])
     clf_du = LogisticRegression(max_iter=1000).fit(X_tr[has_dur], [e["duration"] for e in tr if e["duration"] > 0])
-    va_sw, va_du = _gold(va)
-    return score(clf_sw.predict(X_va), va_sw, clf_du.predict(X_va), va_du,
-                 sw_prob=clf_sw.predict_proba(X_va)[:, 1])
+    return _report(ev, clf_sw.predict(X_ev), clf_du.predict(X_ev), sw_prob=clf_sw.predict_proba(X_ev)[:, 1])
 
 
-_TR = _VA = None   # set before the fork pool starts
-
-
-def _one(tag):
-    tr = [e for e in _TR if e["pair"] == tag]
-    va = [e for e in _VA if e["pair"] == tag]
-    b0a, b0n = _b0(tr, va)
-    return tag, b0a, b0n, _b1(tag, tr, va), _b2(tr, va)
-
-
-def run_baselines(train_raw, val_raw):
-    """Return {baseline_name: {pair: score_dict}}. One process per language pair."""
-    global _TR, _VA
-    _TR, _VA = train_raw, val_raw
-    res = {"B0 always-switch": {}, "B0 never-switch": {}, "B1 lookup": {}, "B2 char-ngram LR": {}}
-    for tag, a, n, b1, b2 in pmap(_one, C.PAIR_TAGS, chunksize=1, min_items=2):
-        res["B0 always-switch"][tag], res["B0 never-switch"][tag] = a, n
-        res["B1 lookup"][tag], res["B2 char-ngram LR"][tag] = b1, b2
-    return res
+def run_baselines(train_raw, eval_raw):
+    """Fit on the pooled train set, evaluate on eval_raw. Return {baseline_name: {"ALL"/pair: score_dict}}."""
+    b0a, b0n = _b0(train_raw, eval_raw)
+    return {"B0 always-switch": b0a, "B0 never-switch": b0n,
+            "B1 lookup": _b1(train_raw, eval_raw), "B2 char-ngram LR": _b2(train_raw, eval_raw)}

@@ -41,16 +41,41 @@ hist = []
 if args.model == "baselines":
     from codeswitch import baselines
     res = baselines.run_baselines(tr, va)
+    test_res = baselines.run_baselines(tr, te)   # same train set, evaluated on the fixed test set
 elif args.model == "xlmr":
     from codeswitch import xlmr
     tok, model, tdl, vdl = xlmr.build(tr, va)
-    hist = xlmr.train(model, tdl, vdl)       # restores best epoch
+    hist = xlmr.train(model, tdl, vdl)       # restores best epoch (by SW_PR-AUC + DUR_MacroF1)
+    mod, test_dl = xlmr, xlmr.make_eval_dl(te, tok)
     res = xlmr.evaluate(model, vdl)
 else:
     from codeswitch import qwen
     tok, model, tdl, vdl, _ = qwen.build(train_recs, val_recs)
-    hist = qwen.train(model, tdl, vdl)       # restores best epoch
+    hist = qwen.train(model, tdl, vdl)       # restores best epoch (by SW_PR-AUC + DUR_MacroF1)
+    mod, test_dl = qwen, qwen.make_eval_dl(test_recs, tok)
     res = qwen.evaluate(model, vdl)
+
+if args.model == "baselines":
+    from codeswitch.metrics import pair_report
+    json.dump(test_res, open(f"{out}/test_results.json", "w"), indent=2, default=float)
+    for name, r in test_res.items():
+        rep = pair_report(r)
+        print(f"\nTEST {name}:\n{rep}")
+        rep.to_csv(f"{out}/test_by_pair_{name.split()[0]}_{name.split()[1]}.csv")
+else:
+    from codeswitch.metrics import pair_report, print_scores
+    from codeswitch.plots import plot_history
+    # threshold maximising switch F1, searched on VAL (pooled), then applied unchanged to TEST
+    thr = res["ALL"]["switch_thr"]
+    print(f"val: best switch-F1 {res['ALL']['switch_F1max']:.3f} @ thr {thr:.4f}")
+    test_res = mod.evaluate(model, test_dl, thr=thr)
+    test_res["ALL"]["threshold"] = thr
+    print_scores("test", test_res)
+    rep = pair_report(test_res)
+    print(f"\nTEST per language pair (thr={thr:.4f}):\n{rep}")
+    rep.to_csv(f"{out}/test_by_pair.csv")
+    json.dump(test_res, open(f"{out}/test_results.json", "w"), indent=2, default=float)
+    plot_history(hist, f"{out}/curves.png")
 
 cfg = {k: getattr(C, k) for k in dir(C)
        if k.isupper() and not k.startswith("_") and k not in ("PAIRS", "ALL_PAIRS")}

@@ -128,7 +128,7 @@ def build(train_raw, val_raw):
 
 
 @torch.no_grad()
-def evaluate(model, dl):
+def evaluate(model, dl, thr=None):
     model.eval()
     sw_l, du_l, sw_g, du_g, pairs = [], [], [], [], []
     tot, nb = np.zeros(3), 0
@@ -141,9 +141,17 @@ def evaluate(model, dl):
         sw_g.append(batch["switch_labels"].cpu()); du_g.append(batch["dur_labels"].cpu())
     sw_g, du_g = torch.cat(sw_g), torch.cat(du_g)
     o = head_outputs(torch.cat(sw_l), torch.cat(du_l), sw_g, du_g)
-    res = score_by_pair(o, sw_g.numpy(), du_g.numpy(), pairs)
+    res = score_by_pair(o, sw_g.numpy(), du_g.numpy(), pairs, thr=thr)
     res["ALL"].update(val_loss=round(tot[0] / nb, 4), val_loss_sw=round(tot[1] / nb, 4), val_loss_dur=round(tot[2] / nb, 4))
     return res
+
+
+def make_eval_dl(raw, tok):
+    """DataLoader for a held-out example list (e.g. the fixed test set)."""
+    ds = SwitchDurDataset(raw, tok)
+    lens = [len(x["input_ids"]) for x in ds.items]
+    return DataLoader(ds, batch_sampler=BucketBatchSampler(lens, C.VAL_BATCH_SIZE, shuffle=False),
+                      collate_fn=make_collate(tok), num_workers=C.DL_WORKERS, pin_memory=True)
 
 
 def train(model, train_dl, val_dl):
