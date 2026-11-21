@@ -12,27 +12,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
 from . import config as C
-from .data import pmap
-from .lid import find_units, langs_of
 from .metrics import score
 
 
-def feats(text, pair=None):
-    units = find_units(text)
-    langs = langs_of(units, pair)
-    run = 1                                                    # units in the current language so far
-    while run < len(langs) and langs[-1 - run] == langs[-1]:
-        run += 1
-    trailing = int(len(text.rstrip()) > units[-1].end())       # punctuation / digits after the last unit
-    return (langs[-1], min(run, 6), trailing)
+def _feat(e):                                              # (current language, run length so far, trailing punctuation)
+    return (e["cur"], min(e["run"], 6), e["trail"])
 
 
 def _gold(ev):
     return np.array([e["switch"] for e in ev]), np.array([e["duration"] for e in ev])
-
-
-def _feat(e):                                              # module-level for the fork pool
-    return feats(e["text"], e["pair"])
 
 
 def _report(ev, sw_pred, du_pred, sw_prob=None):
@@ -67,12 +55,12 @@ def _b1(tr, ev, a=2.0):
     mode = _du_mode(tr)
     sw_tab = defaultdict(lambda: [0, 0])                   # feats -> [no-switch count, switch count]
     du_tab = defaultdict(Counter)                          # current language -> duration counts (switch=1 only)
-    for e, key in zip(tr, pmap(_feat, tr)):
+    for e, key in zip(tr, map(_feat, tr)):
         sw_tab[key][e["switch"]] += 1
         if e["duration"] > 0:
             du_tab[key[0]][e["duration"]] += 1
     sw_pred, du_pred, probs = [], [], []
-    for e, key in zip(ev, pmap(_feat, ev)):
+    for e, key in zip(ev, map(_feat, ev)):
         n0, n1 = sw_tab.get(key, (0, 0))
         p = (n1 + a * prior) / (n0 + n1 + a)               # smooth toward the global prior
         probs.append(p)

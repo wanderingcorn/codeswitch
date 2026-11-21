@@ -13,7 +13,7 @@ from . import config as C
 from .lid import find_units
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss
+from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss, dl_kwargs
 
 
 def load_tokenizer():
@@ -115,9 +115,9 @@ def build(train_raw, val_raw):
     train_lens = [len(x["input_ids"]) for x in train_ds.items]
     val_lens = [len(x["input_ids"]) for x in val_ds.items]
     train_dl = DataLoader(train_ds, batch_sampler=BucketBatchSampler(train_lens, C.BATCH_SIZE), collate_fn=collate,
-                          num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+                          **dl_kwargs())
     val_dl = DataLoader(val_ds, batch_sampler=BucketBatchSampler(val_lens, C.VAL_BATCH_SIZE, shuffle=False), collate_fn=collate,
-                        num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+                        **dl_kwargs())
 
     weights = sqrt_balanced_weights(sw)
     print("switch class weights:", weights.tolist())
@@ -151,24 +151,23 @@ def make_eval_dl(raw, tok):
     ds = SwitchDurDataset(raw, tok)
     lens = [len(x["input_ids"]) for x in ds.items]
     return DataLoader(ds, batch_sampler=BucketBatchSampler(lens, C.VAL_BATCH_SIZE, shuffle=False),
-                      collate_fn=make_collate(tok), num_workers=C.DL_WORKERS, pin_memory=True)
+                      collate_fn=make_collate(tok), **dl_kwargs(False))
 
 
 def train(model, train_dl, val_dl):
     return fit(model, train_dl, val_dl, evaluate, C.EPOCHS, C.LR, C.HEAD_LR, log_every=500, keep_best=True, tag="XLM-R")
 
 
-def predict(model, tok, text):
-    """Predict from the text typed so far."""
+def predict(model, tok, text, thr=0.5):
+    """Predict from the text typed so far. switch = p_switch >= thr; p_duration covers classes 1..3 (if a switch happens)."""
     if not find_units(text):
         return None
     inputs = tok(text.rstrip() + tok.mask_token, return_tensors="pt", truncation=True, max_length=C.MAX_LEN).to(DEVICE)
     model.eval()
     with torch.no_grad():
         out = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])
-    p_dur = out["dur_logits"].softmax(-1)[0]
-    return {
-        "p_switch": round(out["switch_logits"].softmax(-1)[0, 1].item(), 3),
-        "duration_if_switch": p_dur[1:].argmax().item() + 1,     # MAX_DUR means ">= MAX_DUR"; meaningful only if a switch happens
-        "p_duration": [round(x, 3) for x in p_dur.tolist()],
-    }
+    p_sw = out["switch_logits"].softmax(-1)[0, 1].item()
+    p_dur = out["dur_logits"][0, 1:].softmax(-1)                 # class 0 (no switch) is not trained on this head
+    return {"p_switch": round(p_sw, 3), "switch": int(p_sw >= thr), "thr": thr,
+            "duration_if_switch": p_dur.argmax().item() + 1,
+            "p_duration": [round(x, 3) for x in p_dur.tolist()]}

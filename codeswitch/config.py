@@ -53,7 +53,16 @@ L1_MIN_SHARE = 0.1        # corpus_report warns when the L1 unit share falls bel
 MIN_UNITS = 2             # a sentence needs at least this many units to have a prediction point
 VAL_FRAC = 0.1            # fraction of conversations (per pair) held out for validation
 
+# ---- LID annotation (run once with `run.py --model annotate`; results are cached on disk) ----
+ANN_DIR = "annotations"   # one <pair>.jsonl per language pair; copy this folder from HPC to the MacBook for training tests / the demo
+MIXLID_NAME = "nlpai-lab/MixLID"                  # all pairs except hi-en
+BHASHA_NAME = "LatentAILabs/bhasha-lid-indic-v2"  # hi-en (same model as arunp0/bhasha-lid-indic-v2)
+ANN_ALL = False           # True: annotate every parseable conversation (not only the selected ones)
+ANN_BATCH = 64            # sentences per MixLID call
+CS_TYPE_COL = "cs_type"   # CSV column used by the demo filter (together with first_language)
+
 # ---- Labels ----
+DUR_DESC = {1: "1-2 units", 2: "3-7 units", 3: ">=8 units"}
 N_DUR = 4                 # 0 = no switch; 1: 1-2 units; 2: 3-7; 3: >=8
 def dur_class(run):
     """Duration class for a new segment of `run` units (1..3)."""

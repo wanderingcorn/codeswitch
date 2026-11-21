@@ -37,6 +37,12 @@ def autocast():
     return torch.autocast("cuda", dtype=torch.float16, enabled=amp_enabled())
 
 
+def dl_kwargs(persistent=True):
+    """DataLoader worker settings; C.DL_WORKERS=0 (e.g. in a notebook on macOS) disables workers."""
+    w = C.DL_WORKERS
+    return dict(num_workers=w, persistent_workers=persistent and w > 0, pin_memory=DEVICE.type == "cuda")
+
+
 def set_seed(seed=C.SEED):
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
 

@@ -12,10 +12,10 @@ from transformers import AutoTokenizer, AutoModel
 
 from . import config as C
 from .data import make_examples, pmap
-from .lid import find_units, langs_of, PIECE_RE
+from .lid import find_units, find_stops
 from .metrics import head_outputs, score_by_pair
 from .trainer import fit
-from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss
+from .utils import DEVICE, autocast, sqrt_balanced_weights, dur_weights, duration_loss, dl_kwargs
 
 
 def load_tokenizer():
@@ -26,22 +26,15 @@ def load_tokenizer():
 
 
 def split_chunks(text):
-    """Return (units, stops); each stop is (char end, index of the current unit).
-    Stops are the end of each unit plus every punctuation mark / digit run after it (same as make_examples)."""
-    units = find_units(text)
-    stops = []
-    for i, u in enumerate(units):
-        stops.append((u.end(), i))
-        gap_end = units[i + 1].start() if i + 1 < len(units) else len(text)
-        gap = text[u.end():gap_end]
-        stops += [(u.end() + m.end(), i) for m in PIECE_RE.finditer(gap)]
-    return units, stops
+    """Return (units, stops); each stop is (char end, ref unit index)."""
+    return find_units(text), [(s.end, s.ref) for s in find_stops(text)]
 
 
-def build_sample(text, tokenizer, pair=None):
+def build_sample(text, langs, tokenizer):
+    """langs: cached per-unit labels of the full sentence."""
     units, stops = split_chunks(text)
     n = len(units)
-    langs = langs_of(units, pair)
+    assert len(langs) == n, "cached labels do not match the unit segmentation"
     run_len = [1] * n
     for j in range(n - 2, -1, -1):
         if langs[j] == langs[j + 1]:
@@ -71,7 +64,7 @@ _TOK = None   # set before the fork pool starts so child processes inherit it
 
 
 def _bs(r):
-    return build_sample(r["text"], _TOK, r["pair"])
+    return build_sample(r["text"], r["langs"], _TOK)
 
 
 class QwenDataset(Dataset):
@@ -107,16 +100,16 @@ def make_collate(tokenizer):
 def check_alignment(recs, tokenizer):
     """Assert that Qwen labelled positions equal the XLM-R examples one-to-one."""
     for r in recs:
-        smp = build_sample(r["text"], tokenizer, r["pair"])
+        smp = build_sample(r["text"], r["langs"], tokenizer)
         q = [(a, b) for a, b in zip(smp["switch_labels"], smp["dur_labels"]) if a != C.IGNORE]
-        x = [(e["switch"], e["duration"]) for e in make_examples(r["text"], r["pair"])]
+        x = [(e["switch"], e["duration"]) for e in make_examples(r["text"], r["langs"])]
         assert q == x, r["text"]
 
 
 def show_alignment(recs, tokenizer):
     """Print tokens with their labels for one sentence that contains a switch."""
-    demo = next(r for r in recs if any(e["switch"] for e in make_examples(r["text"], r["pair"])))
-    smp = build_sample(demo["text"], tokenizer, demo["pair"])
+    demo = next(r for r in recs if any(e["switch"] for e in make_examples(r["text"], r["langs"])))
+    smp = build_sample(demo["text"], demo["langs"], tokenizer)
     print(demo["pair"], "|", demo["text"])
     for t, a, b in zip(tokenizer.convert_ids_to_tokens(smp["input_ids"]), smp["switch_labels"], smp["dur_labels"]):
         print(f"{t!r:14} switch={a:4} dur={b:4}")
@@ -170,9 +163,9 @@ def build(train_recs, val_recs):
     print(f"{train_ds.n_truncated} / {len(train_recs)} training sentences exceed QWEN_MAX_LEN={C.QWEN_MAX_LEN} tokens (tail labels dropped)")
     collate = make_collate(tok)
     train_dl = DataLoader(train_ds, batch_size=C.QWEN_BATCH_SIZE, shuffle=True, collate_fn=collate,
-                          num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+                          **dl_kwargs())
     val_dl = DataLoader(val_ds, batch_size=16, collate_fn=collate,
-                        num_workers=C.DL_WORKERS, persistent_workers=True, pin_memory=True)
+                        **dl_kwargs())
 
     sw = [l for it in train_ds.items for l in it["switch_labels"] if l != C.IGNORE]
     weights = sqrt_balanced_weights(sw)
@@ -210,7 +203,7 @@ def evaluate(model, dl, thr=None):
 def make_eval_dl(recs, tok):
     """DataLoader for held-out records (e.g. the fixed test set)."""
     return DataLoader(QwenDataset(recs, tok), batch_size=16, collate_fn=make_collate(tok),
-                      num_workers=C.DL_WORKERS, pin_memory=True)
+                      **dl_kwargs(False))
 
 
 def train(model, train_dl, val_dl):
@@ -219,7 +212,8 @@ def train(model, train_dl, val_dl):
                log_every=100, keep_best=True, tag="Qwen")
 
 
-def predict(model, tok, text):
+def predict(model, tok, text, thr=0.5):
+    """switch = p_switch >= thr; p_duration covers classes 1..3 (if a switch happens)."""
     units, stops = split_chunks(text)
     if not units:
         return None
@@ -232,9 +226,8 @@ def predict(model, tok, text):
     model.eval()
     with torch.no_grad():
         out = model(input_ids=x, attention_mask=torch.ones_like(x))
-    p_dur = out["dur_logits"][0, -1].softmax(-1)              # read the last token's output
-    return {
-        "p_switch": round(out["switch_logits"][0, -1].softmax(-1)[1].item(), 3),
-        "duration_if_switch": p_dur[1:].argmax().item() + 1,
-        "p_duration": [round(x, 3) for x in p_dur.tolist()],
-    }
+    p_sw = out["switch_logits"][0, -1].softmax(-1)[1].item()    # read the last token's output
+    p_dur = out["dur_logits"][0, -1, 1:].softmax(-1)            # class 0 (no switch) is not trained on this head
+    return {"p_switch": round(p_sw, 3), "switch": int(p_sw >= thr), "thr": thr,
+            "duration_if_switch": p_dur.argmax().item() + 1,
+            "p_duration": [round(x, 3) for x in p_dur.tolist()]}

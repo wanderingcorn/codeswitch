@@ -1,11 +1,12 @@
-"""Run one experiment: python run.py --name NAME --model xlmr|qwen|baselines [--set KEY=VALUE ...]
-Results go to out/NAME/{results,history,config}.json"""
+"""Run one job: python run.py --name NAME --model xlmr|qwen|baselines|annotate [--set KEY=VALUE ...]
+annotate: run LID (MixLID / bhasha) once and cache the labels in C.ANN_DIR; must finish before any training job.
+Training jobs write out/NAME/{results,history,config}.json and out/NAME/model/ (weights + tokenizer + threshold, used by the demo)."""
 import argparse, ast, json, os, time
 
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")   # avoid tokenizer deadlocks after fork
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--model", choices=["xlmr", "qwen", "baselines"], required=True)
+ap.add_argument("--model", choices=["xlmr", "qwen", "baselines", "annotate"], required=True)
 ap.add_argument("--name", required=True)
 ap.add_argument("--set", nargs="*", default=[])      # e.g. LR=2e-5 EPOCHS=3
 args = ap.parse_args()
@@ -27,6 +28,12 @@ out = f"out/{args.name}"
 os.makedirs(out, exist_ok=True)
 set_seed(C.SEED)
 t0 = time.time()
+
+if args.model == "annotate":
+    data.annotate_selected()
+    json.dump({"overrides": args.set, "minutes": round((time.time() - t0) / 60, 1)}, open(f"{out}/config.json", "w"), indent=2)
+    print(f"done: annotations in {C.ANN_DIR}/ ({(time.time() - t0) / 60:.1f} min)")
+    raise SystemExit(0)
 
 records = data.load_records(verbose=False)
 train_recs, val_recs, test_recs = data.split_records(records)   # test is fixed per pair (TEST_SEED, N_TEST_CONV)
@@ -68,6 +75,8 @@ else:
     # threshold maximising switch F1, searched on VAL (pooled), then applied unchanged to TEST
     thr = res["ALL"]["switch_thr"]
     print(f"val: best switch-F1 {res['ALL']['switch_F1max']:.3f} @ thr {thr:.4f}")
+    from codeswitch.store import save_run
+    save_run(out, args.model, model, tok, thr)   # best-epoch weights + tokenizer + val-selected threshold -> out/NAME/model/
     test_res = mod.evaluate(model, test_dl, thr=thr)
     test_res["ALL"]["threshold"] = thr
     print_scores("test", test_res)
