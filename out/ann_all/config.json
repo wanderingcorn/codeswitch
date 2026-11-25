@@ -1,0 +1,7 @@
+{
+  "overrides": [
+    "PAIR_SEL=\"all\"",
+    "ANN_ALL=True"
+  ],
+  "minutes": 8.0
+}

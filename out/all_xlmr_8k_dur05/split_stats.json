@@ -1,0 +1,593 @@
+{
+  "train": {
+    "ALL": {
+      "conversations": 79700,
+      "sentences": 263644,
+      "examples": 5447946,
+      "switch": [
+        4782920,
+        665026
+      ],
+      "duration": [
+        4782920,
+        270287,
+        176772,
+        217967
+      ]
+    },
+    "hi-en": {
+      "conversations": 6822,
+      "sentences": 21711,
+      "examples": 393773,
+      "switch": [
+        278385,
+        115388
+      ],
+      "duration": [
+        278385,
+        70027,
+        28474,
+        16887
+      ]
+    },
+    "yue-en": {
+      "conversations": 7080,
+      "sentences": 36751,
+      "examples": 761269,
+      "switch": [
+        691801,
+        69468
+      ],
+      "duration": [
+        691801,
+        23926,
+        24683,
+        20859
+      ]
+    },
+    "es-en": {
+      "conversations": 6579,
+      "sentences": 19902,
+      "examples": 373984,
+      "switch": [
+        326484,
+        47500
+      ],
+      "duration": [
+        326484,
+        17664,
+        13829,
+        16007
+      ]
+    },
+    "ar-en": {
+      "conversations": 6974,
+      "sentences": 21860,
+      "examples": 317526,
+      "switch": [
+        274994,
+        42532
+      ],
+      "duration": [
+        274994,
+        16712,
+        11625,
+        14195
+      ]
+    },
+    "de-en": {
+      "conversations": 5417,
+      "sentences": 15479,
+      "examples": 277537,
+      "switch": [
+        237044,
+        40493
+      ],
+      "duration": [
+        237044,
+        16663,
+        11220,
+        12610
+      ]
+    },
+    "vi-en": {
+      "conversations": 6890,
+      "sentences": 21878,
+      "examples": 479062,
+      "switch": [
+        425184,
+        53878
+      ],
+      "duration": [
+        425184,
+        22369,
+        13760,
+        17749
+      ]
+    },
+    "ja-en": {
+      "conversations": 6825,
+      "sentences": 22655,
+      "examples": 801105,
+      "switch": [
+        747195,
+        53910
+      ],
+      "duration": [
+        747195,
+        16586,
+        9164,
+        28160
+      ]
+    },
+    "ko-en": {
+      "conversations": 6719,
+      "sentences": 20637,
+      "examples": 311568,
+      "switch": [
+        260615,
+        50953
+      ],
+      "duration": [
+        260615,
+        19226,
+        13013,
+        18714
+      ]
+    },
+    "fr-en": {
+      "conversations": 6543,
+      "sentences": 19097,
+      "examples": 357096,
+      "switch": [
+        310093,
+        47003
+      ],
+      "duration": [
+        310093,
+        17467,
+        13278,
+        16258
+      ]
+    },
+    "ru-en": {
+      "conversations": 6496,
+      "sentences": 19944,
+      "examples": 319896,
+      "switch": [
+        276913,
+        42983
+      ],
+      "duration": [
+        276913,
+        16521,
+        12890,
+        13572
+      ]
+    },
+    "it-en": {
+      "conversations": 6462,
+      "sentences": 19636,
+      "examples": 359025,
+      "switch": [
+        314130,
+        44895
+      ],
+      "duration": [
+        314130,
+        16031,
+        12568,
+        16296
+      ]
+    },
+    "zh-en": {
+      "conversations": 6893,
+      "sentences": 24094,
+      "examples": 696105,
+      "switch": [
+        640082,
+        56023
+      ],
+      "duration": [
+        640082,
+        17095,
+        12268,
+        26660
+      ]
+    }
+  },
+  "val": {
+    "ALL": {
+      "conversations": 8848,
+      "sentences": 29393,
+      "examples": 608072,
+      "switch": [
+        534563,
+        73509
+      ],
+      "duration": [
+        534563,
+        29426,
+        19586,
+        24497
+      ]
+    },
+    "hi-en": {
+      "conversations": 758,
+      "sentences": 2384,
+      "examples": 43256,
+      "switch": [
+        30731,
+        12525
+      ],
+      "duration": [
+        30731,
+        7503,
+        3068,
+        1954
+      ]
+    },
+    "yue-en": {
+      "conversations": 786,
+      "sentences": 4103,
+      "examples": 85536,
+      "switch": [
+        77912,
+        7624
+      ],
+      "duration": [
+        77912,
+        2454,
+        2773,
+        2397
+      ]
+    },
+    "es-en": {
+      "conversations": 731,
+      "sentences": 2208,
+      "examples": 40893,
+      "switch": [
+        35664,
+        5229
+      ],
+      "duration": [
+        35664,
+        2053,
+        1534,
+        1642
+      ]
+    },
+    "ar-en": {
+      "conversations": 774,
+      "sentences": 2464,
+      "examples": 35698,
+      "switch": [
+        31044,
+        4654
+      ],
+      "duration": [
+        31044,
+        1769,
+        1244,
+        1641
+      ]
+    },
+    "de-en": {
+      "conversations": 601,
+      "sentences": 1756,
+      "examples": 32029,
+      "switch": [
+        27572,
+        4457
+      ],
+      "duration": [
+        27572,
+        1736,
+        1199,
+        1522
+      ]
+    },
+    "vi-en": {
+      "conversations": 765,
+      "sentences": 2432,
+      "examples": 53487,
+      "switch": [
+        47520,
+        5967
+      ],
+      "duration": [
+        47520,
+        2465,
+        1519,
+        1983
+      ]
+    },
+    "ja-en": {
+      "conversations": 758,
+      "sentences": 2585,
+      "examples": 91296,
+      "switch": [
+        85098,
+        6198
+      ],
+      "duration": [
+        85098,
+        1883,
+        1109,
+        3206
+      ]
+    },
+    "ko-en": {
+      "conversations": 746,
+      "sentences": 2325,
+      "examples": 35291,
+      "switch": [
+        29543,
+        5748
+      ],
+      "duration": [
+        29543,
+        2176,
+        1402,
+        2170
+      ]
+    },
+    "fr-en": {
+      "conversations": 726,
+      "sentences": 2116,
+      "examples": 40081,
+      "switch": [
+        34793,
+        5288
+      ],
+      "duration": [
+        34793,
+        2016,
+        1423,
+        1849
+      ]
+    },
+    "ru-en": {
+      "conversations": 721,
+      "sentences": 2248,
+      "examples": 36622,
+      "switch": [
+        31710,
+        4912
+      ],
+      "duration": [
+        31710,
+        1825,
+        1573,
+        1514
+      ]
+    },
+    "it-en": {
+      "conversations": 717,
+      "sentences": 2133,
+      "examples": 38195,
+      "switch": [
+        33450,
+        4745
+      ],
+      "duration": [
+        33450,
+        1697,
+        1320,
+        1728
+      ]
+    },
+    "zh-en": {
+      "conversations": 765,
+      "sentences": 2639,
+      "examples": 75688,
+      "switch": [
+        69526,
+        6162
+      ],
+      "duration": [
+        69526,
+        1849,
+        1422,
+        2891
+      ]
+    }
+  },
+  "test": {
+    "ALL": {
+      "conversations": 9587,
+      "sentences": 31377,
+      "examples": 645260,
+      "switch": [
+        565777,
+        79483
+      ],
+      "duration": [
+        565777,
+        32173,
+        21220,
+        26090
+      ]
+    },
+    "hi-en": {
+      "conversations": 799,
+      "sentences": 2586,
+      "examples": 46584,
+      "switch": [
+        32747,
+        13837
+      ],
+      "duration": [
+        32747,
+        8386,
+        3464,
+        1987
+      ]
+    },
+    "yue-en": {
+      "conversations": 788,
+      "sentences": 4034,
+      "examples": 82810,
+      "switch": [
+        75543,
+        7267
+      ],
+      "duration": [
+        75543,
+        2391,
+        2610,
+        2266
+      ]
+    },
+    "es-en": {
+      "conversations": 800,
+      "sentences": 2407,
+      "examples": 45560,
+      "switch": [
+        39752,
+        5808
+      ],
+      "duration": [
+        39752,
+        2120,
+        1679,
+        2009
+      ]
+    },
+    "ar-en": {
+      "conversations": 800,
+      "sentences": 2467,
+      "examples": 35902,
+      "switch": [
+        30952,
+        4950
+      ],
+      "duration": [
+        30952,
+        1983,
+        1335,
+        1632
+      ]
+    },
+    "de-en": {
+      "conversations": 800,
+      "sentences": 2344,
+      "examples": 42285,
+      "switch": [
+        36075,
+        6210
+      ],
+      "duration": [
+        36075,
+        2498,
+        1751,
+        1961
+      ]
+    },
+    "vi-en": {
+      "conversations": 800,
+      "sentences": 2486,
+      "examples": 54552,
+      "switch": [
+        48513,
+        6039
+      ],
+      "duration": [
+        48513,
+        2454,
+        1585,
+        2000
+      ]
+    },
+    "ja-en": {
+      "conversations": 800,
+      "sentences": 2637,
+      "examples": 93450,
+      "switch": [
+        87122,
+        6328
+      ],
+      "duration": [
+        87122,
+        1962,
+        1067,
+        3299
+      ]
+    },
+    "ko-en": {
+      "conversations": 800,
+      "sentences": 2416,
+      "examples": 36959,
+      "switch": [
+        31024,
+        5935
+      ],
+      "duration": [
+        31024,
+        2119,
+        1619,
+        2197
+      ]
+    },
+    "fr-en": {
+      "conversations": 800,
+      "sentences": 2343,
+      "examples": 43342,
+      "switch": [
+        37572,
+        5770
+      ],
+      "duration": [
+        37572,
+        2203,
+        1597,
+        1970
+      ]
+    },
+    "ru-en": {
+      "conversations": 800,
+      "sentences": 2433,
+      "examples": 39546,
+      "switch": [
+        34115,
+        5431
+      ],
+      "duration": [
+        34115,
+        2080,
+        1621,
+        1730
+      ]
+    },
+    "it-en": {
+      "conversations": 800,
+      "sentences": 2396,
+      "examples": 44970,
+      "switch": [
+        39413,
+        5557
+      ],
+      "duration": [
+        39413,
+        2031,
+        1483,
+        2043
+      ]
+    },
+    "zh-en": {
+      "conversations": 800,
+      "sentences": 2828,
+      "examples": 79300,
+      "switch": [
+        72949,
+        6351
+      ],
+      "duration": [
+        72949,
+        1946,
+        1409,
+        2996
+      ]
+    }
+  }
+}
