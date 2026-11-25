@@ -1,7 +1,7 @@
 # Project file
 SwitchLingua_text.csv
 parse_failed_conversations.txt
-results.json
+out/**/model/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
