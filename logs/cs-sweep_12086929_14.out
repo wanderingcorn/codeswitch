@@ -1,0 +1,110 @@
+== all_qwen_5k_dur02 | qwen | PAIR_SEL="all" MAX_CONV_PER_PAIR=5000   QWEN_EPOCHS=3 LAMBDA_DUR=0.2 ==
+PAIR_TAGS: ['hi-en', 'yue-en', 'es-en', 'ar-en', 'de-en', 'vi-en', 'ja-en', 'ko-en', 'fr-en', 'ru-en', 'it-en', 'zh-en'] | NUM_WORKERS: 4
+[train] ALL     conv 53926 | sent 177582 | ex 3653569 | switch(0/1) [3205896, 447673] | dur(0/1/2/3) [3205896, 181625, 118824, 147224]
+[train] hi-en   conv  4500 | sent  14209 | ex  256510 | switch(0/1) [181216, 75294] | dur(0/1/2/3) [181216, 45858, 18454, 10982]
+[train] yue-en  conv  4427 | sent  23112 | ex  475967 | switch(0/1) [432628, 43339] | dur(0/1/2/3) [432628, 14913, 15469, 12957]
+[train] es-en   conv  4500 | sent  13638 | ex  255822 | switch(0/1) [223332, 32490] | dur(0/1/2/3) [223332, 12203, 9440, 10847]
+[train] ar-en   conv  4500 | sent  14259 | ex  207941 | switch(0/1) [180332, 27609] | dur(0/1/2/3) [180332, 10653, 7582, 9374]
+[train] de-en   conv  4500 | sent  12890 | ex  231852 | switch(0/1) [198339, 33513] | dur(0/1/2/3) [198339, 13596, 9222, 10695]
+[train] vi-en   conv  4500 | sent  14338 | ex  312879 | switch(0/1) [277706, 35173] | dur(0/1/2/3) [277706, 14629, 9020, 11524]
+[train] ja-en   conv  4499 | sent  14940 | ex  530741 | switch(0/1) [495080, 35661] | dur(0/1/2/3) [495080, 10903, 6079, 18679]
+[train] ko-en   conv  4500 | sent  13886 | ex  210165 | switch(0/1) [175949, 34216] | dur(0/1/2/3) [175949, 12938, 8558, 12720]
+[train] fr-en   conv  4500 | sent  13190 | ex  248957 | switch(0/1) [216356, 32601] | dur(0/1/2/3) [216356, 11940, 9200, 11461]
+[train] ru-en   conv  4500 | sent  13868 | ex  224183 | switch(0/1) [194038, 30145] | dur(0/1/2/3) [194038, 11525, 9082, 9538]
+[train] it-en   conv  4500 | sent  13669 | ex  247127 | switch(0/1) [215856, 31271] | dur(0/1/2/3) [215856, 11444, 8786, 11041]
+[train] zh-en   conv  4500 | sent  15583 | ex  451425 | switch(0/1) [415064, 36361] | dur(0/1/2/3) [415064, 11023, 7932, 17406]
+[val  ] ALL     conv  5986 | sent  19490 | ex  402140 | switch(0/1) [352839, 49301] | dur(0/1/2/3) [352839, 20073, 13105, 16123]
+[val  ] hi-en   conv   499 | sent   1605 | ex   29385 | switch(0/1) [20914, 8471] | dur(0/1/2/3) [20914, 5084, 2131, 1256]
+[val  ] yue-en  conv   491 | sent   2516 | ex   52098 | switch(0/1) [47408, 4690] | dur(0/1/2/3) [47408, 1591, 1683, 1416]
+[val  ] es-en   conv   500 | sent   1503 | ex   29058 | switch(0/1) [25447, 3611] | dur(0/1/2/3) [25447, 1287, 1021, 1303]
+[val  ] ar-en   conv   500 | sent   1534 | ex   21554 | switch(0/1) [18587, 2967] | dur(0/1/2/3) [18587, 1257, 788, 922]
+[val  ] de-en   conv   499 | sent   1448 | ex   26140 | switch(0/1) [22331, 3809] | dur(0/1/2/3) [22331, 1561, 1043, 1205]
+[val  ] vi-en   conv   499 | sent   1579 | ex   35141 | switch(0/1) [31133, 4008] | dur(0/1/2/3) [31133, 1651, 1033, 1324]
+[val  ] ja-en   conv   499 | sent   1647 | ex   58141 | switch(0/1) [54195, 3946] | dur(0/1/2/3) [54195, 1322, 630, 1994]
+[val  ] ko-en   conv   500 | sent   1563 | ex   23314 | switch(0/1) [19499, 3815] | dur(0/1/2/3) [19499, 1437, 1006, 1372]
+[val  ] fr-en   conv   499 | sent   1432 | ex   26455 | switch(0/1) [22944, 3511] | dur(0/1/2/3) [22944, 1383, 978, 1150]
+[val  ] ru-en   conv   500 | sent   1470 | ex   23880 | switch(0/1) [20709, 3171] | dur(0/1/2/3) [20709, 1188, 952, 1031]
+[val  ] it-en   conv   500 | sent   1483 | ex   27691 | switch(0/1) [24337, 3354] | dur(0/1/2/3) [24337, 1066, 947, 1341]
+[val  ] zh-en   conv   500 | sent   1710 | ex   49283 | switch(0/1) [45335, 3948] | dur(0/1/2/3) [45335, 1246, 893, 1809]
+[test ] ALL     conv  9587 | sent  31377 | ex  645260 | switch(0/1) [565777, 79483] | dur(0/1/2/3) [565777, 32173, 21220, 26090]
+[test ] hi-en   conv   799 | sent   2586 | ex   46584 | switch(0/1) [32747, 13837] | dur(0/1/2/3) [32747, 8386, 3464, 1987]
+[test ] yue-en  conv   788 | sent   4034 | ex   82810 | switch(0/1) [75543, 7267] | dur(0/1/2/3) [75543, 2391, 2610, 2266]
+[test ] es-en   conv   800 | sent   2407 | ex   45560 | switch(0/1) [39752, 5808] | dur(0/1/2/3) [39752, 2120, 1679, 2009]
+[test ] ar-en   conv   800 | sent   2467 | ex   35902 | switch(0/1) [30952, 4950] | dur(0/1/2/3) [30952, 1983, 1335, 1632]
+[test ] de-en   conv   800 | sent   2344 | ex   42285 | switch(0/1) [36075, 6210] | dur(0/1/2/3) [36075, 2498, 1751, 1961]
+[test ] vi-en   conv   800 | sent   2486 | ex   54552 | switch(0/1) [48513, 6039] | dur(0/1/2/3) [48513, 2454, 1585, 2000]
+[test ] ja-en   conv   800 | sent   2637 | ex   93450 | switch(0/1) [87122, 6328] | dur(0/1/2/3) [87122, 1962, 1067, 3299]
+[test ] ko-en   conv   800 | sent   2416 | ex   36959 | switch(0/1) [31024, 5935] | dur(0/1/2/3) [31024, 2119, 1619, 2197]
+[test ] fr-en   conv   800 | sent   2343 | ex   43342 | switch(0/1) [37572, 5770] | dur(0/1/2/3) [37572, 2203, 1597, 1970]
+[test ] ru-en   conv   800 | sent   2433 | ex   39546 | switch(0/1) [34115, 5431] | dur(0/1/2/3) [34115, 2080, 1621, 1730]
+[test ] it-en   conv   800 | sent   2396 | ex   44970 | switch(0/1) [39413, 5557] | dur(0/1/2/3) [39413, 2031, 1483, 2043]
+[test ] zh-en   conv   800 | sent   2828 | ex   79300 | switch(0/1) [72949, 6351] | dur(0/1/2/3) [72949, 1946, 1409, 2996]
+0 / 177582 training sentences exceed QWEN_MAX_LEN=256 tokens (tail labels dropped)
+switch class weights: [0.7548643946647644, 2.020055055618286]
+duration class weights (1..3): [0.9064252972602844, 1.120644211769104, 1.0067706108093262]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Qwen/Qwen3-0.6B-Base | LoRA=False | trainable 440.5M / 596.1M params
+[mem Qwen step 0] CUDA alloc 2.4 GB | RSS 6.5 GB
+epoch 1 step 173/2775 (ep 0.062): train loss 1.1673 (sw 0.7787 | dur 0.3886) | max grad norm 72.04 (inf steps 5)
+  [monitor] SW: PR-AUC 0.661 | Antic-F1 0.617 (max 0.617 @thr 0.514) || DUR: Acc 0.532 | MacroF1 0.502
+  ^ best so far
+[mem Qwen step 173] CUDA alloc 5.9 GB | RSS 8.5 GB
+epoch 1 step 347/2775 (ep 0.125): train loss 0.5286 (sw 0.3198 | dur 0.2088) | max grad norm 13.69 (inf steps 0)
+  [monitor] SW: PR-AUC 0.731 | Antic-F1 0.664 (max 0.674 @thr 0.598) || DUR: Acc 0.570 | MacroF1 0.550
+  ^ best so far
+[mem Qwen step 347] CUDA alloc 5.9 GB | RSS 10.7 GB
+epoch 1 step 694/2775 (ep 0.250): train loss 0.4762 (sw 0.2817 | dur 0.1945) | max grad norm 10.54 (inf steps 0)
+  [monitor] SW: PR-AUC 0.767 | Antic-F1 0.673 (max 0.700 @thr 0.688) || DUR: Acc 0.599 | MacroF1 0.563
+  ^ best so far
+[mem Qwen step 694] CUDA alloc 5.9 GB | RSS 10.7 GB
+epoch 1 step 1388/2775 (ep 0.500): train loss 0.4393 (sw 0.2536 | dur 0.1857) | max grad norm 11.38 (inf steps 0)
+  [monitor] SW: PR-AUC 0.793 | Antic-F1 0.703 (max 0.718 @thr 0.630) || DUR: Acc 0.616 | MacroF1 0.589
+  ^ best so far
+[mem Qwen step 1388] CUDA alloc 5.9 GB | RSS 10.7 GB
+epoch 1 step 2775/2775 (ep 1.000): train loss 0.4216 (sw 0.2410 | dur 0.1806) | max grad norm 13.04 (inf steps 0)
+  [monitor] SW: PR-AUC 0.809 | Antic-F1 0.722 (max 0.728 @thr 0.603) || DUR: Acc 0.627 | MacroF1 0.602
+  ^ best so far
+[mem Qwen step 2775] CUDA alloc 5.9 GB | RSS 10.7 GB
+epoch 2 step 2775/2775 (ep 2.000): train loss 0.3843 (sw 0.2101 | dur 0.1741) | max grad norm 11.81 (inf steps 0)
+  [monitor] SW: PR-AUC 0.811 | Antic-F1 0.727 (max 0.732 @thr 0.595) || DUR: Acc 0.631 | MacroF1 0.609
+  ^ best so far
+[mem Qwen step 5550] CUDA alloc 5.9 GB | RSS 10.1 GB
+epoch 3 step 2775/2775 (ep 3.000): train loss 0.3305 (sw 0.1658 | dur 0.1648) | max grad norm 28.66 (inf steps 1)
+  [monitor] SW: PR-AUC 0.794 | Antic-F1 0.712 (max 0.720 @thr 0.644) || DUR: Acc 0.622 | MacroF1 0.603
+[mem Qwen step 8325] CUDA alloc 5.9 GB | RSS 10.1 GB
+val: best switch-F1 0.732 @ thr 0.5950
+saved model -> out/all_qwen_5k_dur02/model (threshold 0.5950)
+test [ALL   ] {'switch_PR_AUC': 0.81, 'dur_macro_F1': 0.612, 'switch_P': 0.731, 'switch_R': 0.73, 'switch_F1': 0.73, 'dur_R1': 0.751, 'dur_R2': 0.445, 'dur_R3': 0.637, 'switch_F1max': 0.731, 'switch_thr': 0.5719, 'joint_acc': 0.901, 'dur_acc': 0.632, 'dur_MAE': 0.461, 'val_ce_sw': 0.1779, 'val_ce_dur': 0.8148, 'val_loss': np.float64(0.423), 'val_loss_sw': np.float64(0.2453), 'val_loss_dur': np.float64(0.1777), 'threshold': 0.595}
+test [hi-en ] {'switch_PR_AUC': 0.841, 'dur_macro_F1': 0.575, 'switch_P': 0.713, 'switch_R': 0.8, 'switch_F1': 0.754, 'dur_R1': 0.827, 'dur_R2': 0.358, 'dur_R3': 0.505, 'switch_F1max': 0.756, 'switch_thr': 0.6263, 'joint_acc': 0.76, 'dur_acc': 0.663, 'dur_MAE': 0.395, 'val_ce_sw': 0.3497, 'val_ce_dur': 0.7298}
+test [yue-en] {'switch_PR_AUC': 0.667, 'dur_macro_F1': 0.617, 'switch_P': 0.694, 'switch_R': 0.532, 'switch_F1': 0.602, 'dur_R1': 0.715, 'dur_R2': 0.656, 'dur_R3': 0.469, 'switch_F1max': 0.609, 'switch_thr': 0.4908, 'joint_acc': 0.918, 'dur_acc': 0.617, 'dur_MAE': 0.42, 'val_ce_sw': 0.1774, 'val_ce_dur': 0.8135}
+test [es-en ] {'switch_PR_AUC': 0.77, 'dur_macro_F1': 0.598, 'switch_P': 0.679, 'switch_R': 0.722, 'switch_F1': 0.7, 'dur_R1': 0.717, 'dur_R2': 0.491, 'dur_R3': 0.587, 'switch_F1max': 0.703, 'switch_thr': 0.5516, 'joint_acc': 0.886, 'dur_acc': 0.607, 'dur_MAE': 0.492, 'val_ce_sw': 0.206, 'val_ce_dur': 0.8614}
+test [ar-en ] {'switch_PR_AUC': 0.804, 'dur_macro_F1': 0.605, 'switch_P': 0.732, 'switch_R': 0.721, 'switch_F1': 0.727, 'dur_R1': 0.707, 'dur_R2': 0.46, 'dur_R3': 0.644, 'switch_F1max': 0.728, 'switch_thr': 0.5844, 'joint_acc': 0.889, 'dur_acc': 0.619, 'dur_MAE': 0.497, 'val_ce_sw': 0.2021, 'val_ce_dur': 0.8588}
+test [de-en ] {'switch_PR_AUC': 0.831, 'dur_macro_F1': 0.586, 'switch_P': 0.756, 'switch_R': 0.785, 'switch_F1': 0.77, 'dur_R1': 0.763, 'dur_R2': 0.431, 'dur_R3': 0.564, 'switch_F1max': 0.771, 'switch_thr': 0.5792, 'joint_acc': 0.884, 'dur_acc': 0.606, 'dur_MAE': 0.501, 'val_ce_sw': 0.1937, 'val_ce_dur': 0.859}
+test [vi-en ] {'switch_PR_AUC': 0.734, 'dur_macro_F1': 0.574, 'switch_P': 0.691, 'switch_R': 0.646, 'switch_F1': 0.668, 'dur_R1': 0.763, 'dur_R2': 0.4, 'dur_R3': 0.556, 'switch_F1max': 0.67, 'switch_thr': 0.5421, 'joint_acc': 0.901, 'dur_acc': 0.599, 'dur_MAE': 0.509, 'val_ce_sw': 0.1962, 'val_ce_dur': 0.8687}
+test [ja-en ] {'switch_PR_AUC': 0.844, 'dur_macro_F1': 0.585, 'switch_P': 0.782, 'switch_R': 0.733, 'switch_F1': 0.757, 'dur_R1': 0.746, 'dur_R2': 0.173, 'dur_R3': 0.849, 'switch_F1max': 0.759, 'switch_thr': 0.6207, 'joint_acc': 0.955, 'dur_acc': 0.703, 'dur_MAE': 0.409, 'val_ce_sw': 0.0898, 'val_ce_dur': 0.7206}
+test [ko-en ] {'switch_PR_AUC': 0.941, 'dur_macro_F1': 0.619, 'switch_P': 0.883, 'switch_R': 0.871, 'switch_F1': 0.877, 'dur_R1': 0.709, 'dur_R2': 0.446, 'dur_R3': 0.704, 'switch_F1max': 0.879, 'switch_thr': 0.6536, 'joint_acc': 0.908, 'dur_acc': 0.636, 'dur_MAE': 0.484, 'val_ce_sw': 0.12, 'val_ce_dur': 0.8339}
+test [fr-en ] {'switch_PR_AUC': 0.809, 'dur_macro_F1': 0.595, 'switch_P': 0.726, 'switch_R': 0.736, 'switch_F1': 0.731, 'dur_R1': 0.735, 'dur_R2': 0.444, 'dur_R3': 0.606, 'switch_F1max': 0.733, 'switch_thr': 0.5464, 'joint_acc': 0.892, 'dur_acc': 0.611, 'dur_MAE': 0.496, 'val_ce_sw': 0.1947, 'val_ce_dur': 0.8585}
+test [ru-en ] {'switch_PR_AUC': 0.758, 'dur_macro_F1': 0.624, 'switch_P': 0.696, 'switch_R': 0.703, 'switch_F1': 0.7, 'dur_R1': 0.704, 'dur_R2': 0.564, 'dur_R3': 0.597, 'switch_F1max': 0.702, 'switch_thr': 0.566, 'joint_acc': 0.884, 'dur_acc': 0.628, 'dur_MAE': 0.47, 'val_ce_sw': 0.2225, 'val_ce_dur': 0.8441}
+test [it-en ] {'switch_PR_AUC': 0.773, 'dur_macro_F1': 0.612, 'switch_P': 0.685, 'switch_R': 0.727, 'switch_F1': 0.706, 'dur_R1': 0.694, 'dur_R2': 0.495, 'dur_R3': 0.648, 'switch_F1max': 0.707, 'switch_thr': 0.5707, 'joint_acc': 0.893, 'dur_acc': 0.624, 'dur_MAE': 0.483, 'val_ce_sw': 0.2039, 'val_ce_dur': 0.8462}
+test [zh-en ] {'switch_PR_AUC': 0.818, 'dur_macro_F1': 0.57, 'switch_P': 0.752, 'switch_R': 0.733, 'switch_F1': 0.742, 'dur_R1': 0.694, 'dur_R2': 0.287, 'dur_R3': 0.741, 'switch_F1max': 0.743, 'switch_thr': 0.5872, 'joint_acc': 0.939, 'dur_acc': 0.626, 'dur_MAE': 0.487, 'val_ce_sw': 0.1142, 'val_ce_dur': 0.8134}
+
+TEST per language pair (thr=0.5950):
+        Anticipatory_F1  dur_acc
+hi-en            0.7540   0.6630
+yue-en           0.6020   0.6170
+es-en            0.7000   0.6070
+ar-en            0.7270   0.6190
+de-en            0.7700   0.6060
+vi-en            0.6680   0.5990
+ja-en            0.7570   0.7030
+ko-en            0.8770   0.6360
+fr-en            0.7310   0.6110
+ru-en            0.7000   0.6280
+it-en            0.7060   0.6240
+zh-en            0.7420   0.6260
+MEAN             0.7278   0.6283
+STD              0.0655   0.0289
+POOLED           0.7300   0.6320
+/home/lu.suo/codeswitch/codeswitch/plots.py:29: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  a.set_xlabel("epoch"); a.legend(); a.grid(alpha=.3)
+done: out/all_qwen_5k_dur02 (108.8 min)
