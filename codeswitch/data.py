@@ -12,6 +12,7 @@ from . import config as C
 from . import lid
 from .lid import find_units, find_stops, LANG_NAME
 
+                
 # ---------- Loading ----------
 def parse_conv(s):
     """Parse the data_generation_result string into a list of sentences; None on failure."""
@@ -70,6 +71,8 @@ def select_convs(parsed):
 def _sentences(raw):
     """(index in the conversation, cleaned text, n_units) for every sentence that has a prediction point."""
     for idx, t in enumerate(map(clean, raw)):
+        if len(t) > C.MAX_SENT_CHARS:
+            continue                      # extreme long conversations, no annotation, no training
         n = len(find_units(t))
         if n >= C.MIN_UNITS:
             yield idx, t, n
@@ -114,17 +117,17 @@ def load_records(path=C.DATA_PATH, verbose=True):
     return records
 
 
-def load_convs(conv_ids, path=C.DATA_PATH):
-    """Complete conversations for the demo. Each: {"conv", "pair", "first_language", "cs_type", "turns": [{"text", "langs"|None}]}.
-    A turn is one element of the conversation list; langs is None when the turn is too short or not annotated."""
-    df = pd.read_csv(path)
+def load_convs(conv_ids, path=C.DATA_PATH, df=None, anns=None):
+    df = pd.read_csv(path) if df is None else df
     if C.CS_TYPE_COL not in df.columns:
         raise KeyError(f"column {C.CS_TYPE_COL!r} not in the CSV; columns: {list(df.columns)}")
-    anns, out = {}, []
+    anns = {} if anns is None else anns          # {pair: load_ann(pair)}, 由调用方跨次复用
+    out = []
     for cid in conv_ids:
         tag, rid = cid.split("#")
         row = df.loc[int(rid)]
-        anns.setdefault(tag, lid.load_ann(tag))
+        if tag not in anns:
+            anns[tag] = lid.load_ann(tag)
         raw = parse_conv(row["data_generation_result"]) or []
         turns = []
         for idx, t in enumerate(map(clean, raw)):

@@ -8,12 +8,32 @@ import argparse
 import json
 import os
 import random
-
+import pandas as pd
 from . import config as C
 from .data import clean, load_convs, make_examples
 from .lid import find_units
 from .store import load_run
 
+
+def conv_meta(conv_ids, df):
+    """只用 CSV 元数据列, 不解析对话内容。"""
+    return [{"conv": c, "first_language": df.at[int(c.split("#")[1]), "first_language"],
+             "cs_type": str(df.at[int(c.split("#")[1]), C.CS_TYPE_COL])} for c in conv_ids]
+
+
+def draw(meta, fl, ct, n, rng, df, anns, bad):
+    """先从元数据里按 filter 抽 n 个 ID, 再只对这 n 个加载内容; 标注不全的剔除并补抽。"""
+    out, got = [], set()
+    while True:
+        pool = [m["conv"] for m in meta if (not fl or m["first_language"] == fl)
+                and (not ct or m["cs_type"] == ct) and m["conv"] not in bad and m["conv"] not in got]
+        if not pool or len(out) >= n:
+            return out
+        for c in load_convs(rng.sample(pool, min(n - len(out), len(pool))), df=df, anns=anns):
+            if all(t["langs"] is not None or len(find_units(t["text"])) < C.MIN_UNITS for t in c["turns"]):
+                out.append(c); got.add(c["conv"])
+            else:
+                bad.add(c["conv"])
 
 def _ask(msg, options=None):
     if options:
@@ -97,18 +117,19 @@ def main(argv=None):
         from .qwen import predict
     print(f"loaded {kind} model (pairs {meta['pairs']}, threshold {thr:.4f})")
 
+    df = pd.read_csv(C.DATA_PATH)                       # 只读一次
     with open(os.path.join(a.run, "test_convs.json")) as f:
-        convs = load_convs(json.load(f))
-    convs = [c for c in convs if all(t["langs"] is not None or len(find_units(t["text"])) < C.MIN_UNITS for t in c["turns"])]
+        meta = conv_meta(json.load(f), df)
+    anns, bad = {}, set()
     rng = random.Random(a.seed)
     fl, ct = a.first_language, a.cs_type
 
     while True:
-        shown = pick(convs, fl, ct, a.n, rng)
+        shown = draw(meta, fl, ct, a.n, rng, df, anns, bad)
         if not shown:
             print(f"no test conversation for first_language={fl!r}, cs_type={ct!r}")
-            fl = _ask("first_language: ", {c["first_language"] for c in convs}) or None
-            ct = _ask("cs_type: ", {str(c["cs_type"]) for c in convs if not fl or c["first_language"] == fl}) or None
+            fl = _ask("first_language: ", {m["first_language"] for m in meta}) or None
+            ct = _ask("cs_type: ", {m["cs_type"] for m in meta if not fl or m["first_language"] == fl}) or None
             continue
         show_dialogues(shown)
         while True:

@@ -15,6 +15,8 @@ DUR_CLASSES = [1, 2, 3]
 def head_outputs(sw_logits, du_logits, sw_gold, du_gold):
     """Tensors (N,2), (N,4), (N,), (N,) -> numpy dict of probabilities, hard predictions and per-sample CE.
     Duration prediction and duration CE only use classes 1..3 (class 0 = no switch is excluded)."""
+    if not (torch.isfinite(sw_logits).all() and torch.isfinite(du_logits).all()):
+        raise FloatingPointError("non-finite logits")
     sw_logits, du_logits = sw_logits.float().cpu(), du_logits.float().cpu()
     sw_gold, du_gold = sw_gold.cpu(), du_gold.cpu()
     sw_ce = F.cross_entropy(sw_logits, sw_gold, reduction="none")          # unweighted, comparable across runs

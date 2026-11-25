@@ -2,8 +2,9 @@
 
 Segmentation is regex-based. Per-unit labels: 0 = L1 (non-English), 1 = English.
 LID runs ONCE per sentence (full-sentence context) and the result is cached in C.ANN_DIR/<pair>.jsonl:
-  - hi-en            : bhasha-lid-indic-v2 (word level; native + romanized)
-  - all other pairs  : MixLID (subword level, 111 languages), mapped onto our units by character offsets
+  - hi-en                 : bhasha-lid-indic-v2 (word level; native + romanized)
+  - zh/yue/ja/ko/ar/ru-en : script rule only (non-Latin unit = L1, Latin unit = English)
+  - es/fr/it/de/vi-en     : MixLID
 Training, evaluation and the demo only READ the cache (see data.load_records / data.load_convs).
 """
 import json
@@ -107,7 +108,8 @@ class MixLIDTagger:
     # MixLIDTagger.label: 原句输入，按 unit 取回，再用脚本覆盖
     def label(self, texts, pair):
         l1_ids = [self.label2id[k] for k in MIXLID_L1[pair] if k in self.label2id]
-        enc = self.tokenizer(texts, return_tensors="pt", padding=True, truncation=True, return_offsets_mapping=True)
+        enc = self.tokenizer(texts, return_tensors="pt", padding=True, truncation=True,
+                     max_length=C.MIXLID_MAX_LEN, return_offsets_mapping=True)
         offsets_batch = enc.pop("offset_mapping").tolist()
         enc = {k: v.to(self.device) for k, v in enc.items()}
         with self.torch.inference_mode():
@@ -119,8 +121,6 @@ class MixLIDTagger:
             toks = [{"start": s, "end": e, "l1": float(p[l1_ids].sum()), "en": float(p[self.en_id])}
                     for (s, e), p in zip(offsets, tok_probs) if s != e and int(p.argmax()) not in self.aux_ids]
             labs, unk = _align(spans, toks)
-            if pair in L1_SCRIPT_PAIRS:                       # 非 Latin 脚本直接判 L1
-                labs = [0 if NON_LATIN_RE.match(u.group()) else l for u, l in zip(units, labs)]
             out.append((labs, unk))
         return out
 
@@ -146,14 +146,22 @@ class BhashaTagger:
             out.append(fill_unknown(raw))
         return out
 
+class ScriptTagger:
+    """Non-Latin L1 pairs: no model. Non-Latin script unit -> L1 (0); Latin unit -> English (1)."""
+    def __init__(self, device=None):
+        pass
+
+    def label(self, texts, pair):
+        return [([0 if NON_LATIN_RE.match(u.group()) else 1 for u in find_units(t)], 0) for t in texts]
+
 _TAGGERS = {}
 
 
 def get_tagger(pair):
-    kind = "bhasha" if pair == HI_PAIR else "mixlid"
+    kind = "bhasha" if pair == HI_PAIR else "script" if pair in L1_SCRIPT_PAIRS else "mixlid"
     if kind not in _TAGGERS:
         from .utils import DEVICE
-        _TAGGERS[kind] = (BhashaTagger if kind == "bhasha" else MixLIDTagger)(DEVICE)
+        _TAGGERS[kind] = {"bhasha": BhashaTagger, "script": ScriptTagger, "mixlid": MixLIDTagger}[kind](DEVICE)
     return _TAGGERS[kind]
 
 

@@ -1,20 +1,20 @@
 # name  model  overrides (KEY=VALUE, space separated)
-# model: xlmr | qwen | baselines
-ann_all   annotate   PAIR_SEL="all" ANN_ALL=True
-all_qwen_8k_dur02     qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2
-all_xlmr_8k_dur02     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.2
+# model: xlmr | qwen | baselines | annotate
+ann_all               annotate    PAIR_SEL="all" ANN_ALL=True
 baselines_8k          baselines   PAIR_SEL="all" MAX_CONV_PER_PAIR=8000 
-all_qw4b_8k_dur02     qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2 QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4
-
-all_qwen_8k_dur05    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.5
-all_qwen_8k_dur08    qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.8
-all_qwen_8k_dur10     qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2
-all_xlmr_8k_dur05     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.5
-all_xlmr_8k_dur08     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.8
-all_xlmr_8k_dur10     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2
-all_qwen_8k_dur02_seed1   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2 SEED=1
-all_qwen_5k_dur02   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=5000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2
-all_qwen_2k_dur02   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=2000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2
-all_xlmr_8k_dur02_win8     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.2 MAX_LEN=8
-all_xlmr_8k_dur02_win16     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.2 MAX_LEN=16
-all_xlmr_8k_dur02_win32     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=2 LAMBDA_DUR=0.2 MAX_LEN=32
+all_qwen_8k_dur02_seed1   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3 LAMBDA_DUR=0.2 SEED=1
+all_qwen_8k_dur02         qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3 LAMBDA_DUR=0.2
+all_qwen_8k_dur05         qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3 LAMBDA_DUR=0.5
+all_qwen_8k_dur08         qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3 LAMBDA_DUR=0.8
+all_qwen_8k_dur10         qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3
+all_xlmr_8k_dur02     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.2
+all_xlmr_8k_dur05     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.5
+all_xlmr_8k_dur08     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.8
+all_xlmr_8k_dur10     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4
+all_qw4b_8k_dur02           qwen       PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=2 LAMBDA_DUR=0.2 QWEN_NAME="Qwen/Qwen3-4B-Base" QWEN_BATCH_SIZE=8 USE_LORA=True GRAD_CKPT=False QWEN_LR=1e-4
+all_qwen_2k_dur02   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=2000   QWEN_EPOCHS=3 LAMBDA_DUR=0.2
+all_qwen_5k_dur02   qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=5000   QWEN_EPOCHS=3 LAMBDA_DUR=0.2
+all_xlmr_8k_dur02_win8      xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.2 MAX_LEN=8
+all_xlmr_8k_dur02_win16     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.2 MAX_LEN=16
+all_xlmr_8k_dur02_win32     xlmr        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   EPOCHS=4 LAMBDA_DUR=0.2 MAX_LEN=32
+all_qwen_8k_dur00         qwen        PAIR_SEL="all" MAX_CONV_PER_PAIR=8000   QWEN_EPOCHS=3 LAMBDA_DUR=0

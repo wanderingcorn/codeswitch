@@ -50,6 +50,7 @@ def apply_pair_sel():
 apply_pair_sel()
 MAX_CONV_PER_PAIR = 10000   # max conversations per pair; None = use all
 L1_MIN_SHARE = 0.1        # corpus_report warns when the L1 unit share falls below this
+MAX_SENT_CHARS = 1000     # exclude extreme long sentences.
 MIN_UNITS = 2             # a sentence needs at least this many units to have a prediction point
 VAL_FRAC = 0.1            # fraction of conversations (per pair) held out for validation
 
@@ -60,6 +61,7 @@ BHASHA_NAME = "LatentAILabs/bhasha-lid-indic-v2"  # hi-en (same model as arunp0/
 ANN_ALL = False           # True: annotate every parseable conversation (not only the selected ones)
 ANN_BATCH = 64            # sentences per MixLID call
 CS_TYPE_COL = "cs_type"   # CSV column used by the demo filter (together with first_language)
+MIXLID_MAX_LEN = 512
 
 # ---- Labels ----
 DUR_DESC = {1: "1-2 units", 2: "3-7 units", 3: ">=8 units"}
